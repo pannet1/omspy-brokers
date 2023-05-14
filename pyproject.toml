@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "omspy-brokers"
+version = "0.1.0"
+description = ""
+authors = ["darkseid <uberdeveloper001@gmail.com>"]
+readme = "README.md"
+packages = [{include = "omspy_brokers"}]
+repository = "https://github.com/pannet1/omspy"
+
+
+[tool.poetry.dependencies]
+omspy = "^0.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

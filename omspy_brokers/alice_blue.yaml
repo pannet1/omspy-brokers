@@ -1,0 +1,9 @@
+orders:
+  Sym: symbol
+  Avgprc: average_price
+  Qty: quantity
+  Fillshares: filled_quantity
+  Nstordno: order_id
+  Exseg: segment
+  Status: status
+  Cancelqty: cancelled_quantity
