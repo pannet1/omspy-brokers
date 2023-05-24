@@ -1,0 +1,8 @@
+order_place:
+  product: productType
+positions:
+  exchangeSegment: exchange
+orders:
+  orderQuantity: quantity
+trades:
+  exchangeSegment: exchange
