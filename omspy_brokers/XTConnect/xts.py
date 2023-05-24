@@ -26,7 +26,7 @@ class Xts(Broker):
             resp = self.broker.interactive_login()
             self.token = resp.get('result').get('token')
         except Exception as e:
-            print(e)
+            print(f"{e} while authenticating")
             return False
         else:
             return True
