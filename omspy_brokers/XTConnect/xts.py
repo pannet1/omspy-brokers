@@ -106,20 +106,3 @@ class Xts(Broker):
             return lst
 
 
-if __name__ == "__main__":
-    from pprint import pprint
-
-    api = "a7d952ac00bc6f9a018192"
-    secret = "Wydb672$dV"
-    userid = "HR098"
-    xt = Xts(api, secret, userid)
-    if not xt.authenticate():
-        SystemExit()
-    resp = xt.positions
-    pprint(resp)
-    resp = xt.orders
-    pprint(resp)
-    resp = xt.trades
-    pprint(resp)
-    resp = xt.holdings
-    pprint(resp)
