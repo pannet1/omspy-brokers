@@ -6,7 +6,6 @@
     :copyright:
     :license: see LICENSE for details.
 """
-import configparser
 import json
 import logging
 
@@ -35,16 +34,18 @@ class XTSConnect(XTSCommon):
     In production, you may initialise a single instance of this class per `api_key`.
     """
     """Get the configurations from config.ini"""
-    cfg = configparser.ConfigParser()
-    cfg.read('XTConnect/config.ini')
+
+    disable_ssl = True
+    root = "https://mtrade.arhamshare.com"
+    broadcastMode = "Full"
     # Default root API endpoint. It's possible to
     # override this by passing the `root` parameter during initialisation.
-    _default_root_uri = cfg.get('root_url', 'root')
+    _default_root_uri = root
     _default_login_uri = _default_root_uri + "/user/session"
     _default_timeout = 7  # In seconds
 
     # SSL Flag
-    _ssl_flag = cfg.get('SSL', 'disable_ssl')
+    _ssl_flag = disable_ssl
 
     # Constants
     # Products
