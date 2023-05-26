@@ -48,7 +48,7 @@ class MDSocket_io(socketio.Client):
         self.sid.on('connect', self.on_connect)
         self.sid.on('message', self.on_message)
 
-         """Similarly implement partial json full and binary json full."""
+        """Similarly implement partial json full and binary json full."""
         self.sid.on('1501-json-full', self.on_message1501_json_full)
         self.sid.on('1501-json-partial', self.on_message1501_json_partial)
 
@@ -85,7 +85,8 @@ class MDSocket_io(socketio.Client):
 
         port = f'{self.port}/?token='
 
-        self.connection_url = port + token + '&userID=' + self.userID + '&publishFormat=' + publishFormat + '&broadcastMode=' + self.broadcastMode
+        self.connection_url = port + token + '&userID=' + self.userID + \
+            '&publishFormat=' + publishFormat + '&broadcastMode=' + self.broadcastMode
 
     def connect(self, headers={}, transports='websocket', namespaces=None, socketio_path='/marketdata/socket.io',
                 verify=False):
@@ -112,7 +113,7 @@ class MDSocket_io(socketio.Client):
         self.connection_transports = transports
         self.connection_namespaces = namespaces
         self.socketio_path = socketio_path
-        
+
         Connect to the socket.
         """
         url = self.connection_url
