@@ -1,3 +1,4 @@
+requests
 pyotp
 smartapi-python
 websocket-client
