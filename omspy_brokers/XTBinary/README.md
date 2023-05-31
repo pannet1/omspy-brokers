@@ -1,1 +1,0 @@
-# xts-pythonsdk-binarymarketdata-api-sdk
