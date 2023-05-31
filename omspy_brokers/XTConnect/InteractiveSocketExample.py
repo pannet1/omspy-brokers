@@ -5,7 +5,6 @@ from InteractiveSocketClient import OrderSocket_io
 API_KEY = "cccc0397aefe029ce61392"
 API_SECRET = "Aoxf623#aa"
 source = "WEBAPI"
-
 # Initialise
 xt = XTSConnect(API_KEY, API_SECRET, source)
 

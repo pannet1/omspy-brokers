@@ -1,5 +1,5 @@
 # Replace "file_name" with the actual name of the Python file you want to import
-from omspy_brokers.XTConnect.Connect import XTSConnect
+from Connect import XTSConnect
 from omspy.base import Broker, pre, post
 from typing import Union
 
