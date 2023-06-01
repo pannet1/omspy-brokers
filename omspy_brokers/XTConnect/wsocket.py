@@ -125,7 +125,8 @@ class Wsocket:
     def __init__(self, API_KEY, API_SECRET):
         self.api_key = API_KEY
         self.api_secret = API_SECRET
-        self.ws = XTSConnect(self.api_key, self.api_secret, source="WEBAPI")
+        source = "WEBAPI"
+        self.ws = XTSConnect(self.api_key, self.api_secret, source)
 
     def authenticate(self):
         try:
