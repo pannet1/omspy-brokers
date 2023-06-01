@@ -1,8 +1,8 @@
-from Connect import XTSConnect
-from MarketDataSocketClient import MDSocket_io
+from omspy_brokers.XTConnect.Connect import XTSConnect
+from omspy_brokers.XTConnect.MarketDataSocketClient import MDSocket_io
 
 
-class Websocket:
+class Wsocket:
 
     def __init__(self, API_KEY, API_SECRET):
         self.api_key = API_KEY
