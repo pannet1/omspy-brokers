@@ -130,7 +130,7 @@ class Wsocket:
 
     def authenticate(self):
         try:
-            response = self.ws.marketdata_login()
+            response = self.xts.marketdata_login()
             self.token = response['result']['token']
             self.user_id = response['result']['userID']
             print("Login: ", response)
