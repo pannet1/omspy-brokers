@@ -14,12 +14,13 @@ def on_connect():
     """Connect from the socket."""
     print('Market Data Socket connected successfully!')
 
-    # # Subscribe to instruments
+    """
     print('Sending subscription request for Instruments - \n' +
           str(Instruments))
     response = self.ws.send_subscription(Instruments, 1501)
     print('Sent Subscription request!')
     print("Subscription response: ", response)
+    """
 
 # Callback on receiving message
 
@@ -136,31 +137,35 @@ class Wsocket:
             print(f"while authenticate {e}")
             return False
         else:
-            soc = MDSocket_io(self.token, self.user_id)
-            soc.on_connect = on_connect
-            soc.on_message = on_message
-            soc.on_message1502_json_full = on_message1502_json_full
-            soc.on_message1505_json_full = on_message1505_json_full
-            soc.on_message1507_json_full = on_message1507_json_full
-            soc.on_message1510_json_full = on_message1510_json_full
-            soc.on_message1501_json_full = on_message1501_json_full
-            soc.on_message1512_json_full = on_message1512_json_full
-            soc.on_message1105_json_full = on_message1105_json_full
-            soc.on_message1502_json_partial = on_message1502_json_partial
-            soc.on_message1505_json_partial = on_message1505_json_partial
-            soc.on_message1510_json_partial = on_message1510_json_partial
-            soc.on_message1501_json_partial = on_message1501_json_partial
-            soc.on_message1512_json_partial = on_message1512_json_partial
-            soc.on_message1105_json_partial = on_message1105_json_partial
-            soc.on_disconnect = on_disconnect
-            soc.on_error = on_error
-            el = soc.get_emitter()
-            el.on('connect', on_connect)
-            el.on('1501-json-full', on_message1501_json_full)
-            el.on('1502-json-full', on_message1502_json_full)
-            el.on('1507-json-full', on_message1507_json_full)
-            el.on('1512-json-full', on_message1512_json_full)
-            el.on('1105-json-full', on_message1105_json_full)
-            self.soc = soc
-            self.el = el
+            self.soc = MDSocket_io(self.token, self.user_id)
+            self.el = self.soc.get_emitter()
             return True
+
+    def attach(self):
+        soc = self.soc
+        soc.on_connect = on_connect
+        soc.on_message = on_message
+        soc.on_message1502_json_full = on_message1502_json_full
+        soc.on_message1505_json_full = on_message1505_json_full
+        soc.on_message1507_json_full = on_message1507_json_full
+        soc.on_message1510_json_full = on_message1510_json_full
+        soc.on_message1501_json_full = on_message1501_json_full
+        soc.on_message1512_json_full = on_message1512_json_full
+        soc.on_message1105_json_full = on_message1105_json_full
+        soc.on_message1502_json_partial = on_message1502_json_partial
+        soc.on_message1505_json_partial = on_message1505_json_partial
+        soc.on_message1510_json_partial = on_message1510_json_partial
+        soc.on_message1501_json_partial = on_message1501_json_partial
+        soc.on_message1512_json_partial = on_message1512_json_partial
+        soc.on_message1105_json_partial = on_message1105_json_partial
+        soc.on_disconnect = on_disconnect
+        soc.on_error = on_error
+        el = self.el
+        el.on('connect', on_connect)
+        el.on('1501-json-full', on_message1501_json_full)
+        el.on('1502-json-full', on_message1502_json_full)
+        el.on('1507-json-full', on_message1507_json_full)
+        el.on('1512-json-full', on_message1512_json_full)
+        el.on('1105-json-full', on_message1105_json_full)
+        self.soc = soc
+        self.el = el
