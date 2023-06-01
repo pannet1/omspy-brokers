@@ -15,11 +15,11 @@ class Wsocket:
             self.token = response['result']['token']
             self.user_id = response['result']['userID']
             print("Login: ", response)
-            self.soc = MDSocket_io(self.token, self.user_id)
         except Exception as e:
             print(f"while authenticate {e}")
             return False
         else:
+            self.soc = MDSocket_io(self.token, self.user_id)
             return True
 
 

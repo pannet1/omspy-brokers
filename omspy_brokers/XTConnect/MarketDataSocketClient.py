@@ -1,7 +1,4 @@
-import configparser
-import os
 from datetime import datetime
-
 import socketio
 
 
@@ -71,18 +68,11 @@ class MDSocket_io(socketio.Client):
 
         self.sid.on('disconnect', self.on_disconnect)
 
-        """Get the root url from config file"""
-        currDirMain = os.getcwd()
-        configParser = configparser.ConfigParser()
-        configFilePath = os.path.join(currDirMain, 'config.ini')
-        configParser.read(configFilePath)
-
-        self.port = configParser.get('root_url', 'root')
+        self.port = "https://mtrade.arhamshare.com"
         self.userID = userID
         publishFormat = 'JSON'
-        self.broadcastMode = configParser.get('root_url', 'broadcastMode')
+        self.broadcastMode = 'Full'
         self.token = token
-
         port = f'{self.port}/?token='
 
         self.connection_url = port + token + '&userID=' + self.userID + \
