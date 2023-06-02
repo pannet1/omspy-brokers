@@ -17,6 +17,7 @@ class Wsocket:
             self.user_id = response['result']['userID']
             print("Login: ", response)
             self.soc = MDSocket_io(self.token, self.user_id)
+            self.el = self.soc.get_emitter()
         except Exception as e:
             print(f"while authenticate {e}")
             return False
