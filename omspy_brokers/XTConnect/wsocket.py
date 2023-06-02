@@ -139,7 +139,6 @@ class Wsocket:
             return False
         else:
             self.soc = MDSocket_io(self.token, self.user_id)
-            self.el = self.soc.get_emitter()
             return True
 
     def attach(self):
@@ -161,6 +160,9 @@ class Wsocket:
         soc.on_message1105_json_partial = on_message1105_json_partial
         soc.on_disconnect = on_disconnect
         soc.on_error = on_error
+        self.soc = soc
+        self.el = self.soc.get_emitter()
+        """
         el = self.el
         el.on('connect', on_connect)
         el.on('1501-json-full', on_message1501_json_full)
@@ -168,5 +170,4 @@ class Wsocket:
         el.on('1507-json-full', on_message1507_json_full)
         el.on('1512-json-full', on_message1512_json_full)
         el.on('1105-json-full', on_message1105_json_full)
-        self.soc = soc
-        self.el = el
+        """
