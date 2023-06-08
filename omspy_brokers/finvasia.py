@@ -19,6 +19,7 @@ class Finvasia(Broker):
         vendor_code: str,
         app_key: str,
         imei: str,
+        broker: str = ""
     ):
         self._user_id = user_id
         self._password = password
@@ -26,7 +27,13 @@ class Finvasia(Broker):
         self._vendor_code = vendor_code
         self._app_key = app_key
         self._imei = imei
-        self.finvasia = ShoonyaApiPy()
+        if broker == "profitmart":
+            self.finvasia = ShoonyaApiPy(
+                host="http://profitmax.profitmart.in:6002/NorenWClientTP/",
+                websocket='ws://rama.kambala.co.in:5552/NorenWS/',
+            )
+        else:
+            self.finvasia = ShoonyaApiPy()
         super(Finvasia, self).__init__()
 
     @property
