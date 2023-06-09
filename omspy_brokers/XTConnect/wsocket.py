@@ -23,16 +23,16 @@ class Wsocket:
         self.el.on('connect', self.on_connect)
         self.dct = {}
 
-    def on_connect():
+    def on_connect(self):
         print("omspy_broker.XTConnect.Wsocket connected successfully")
 
-    def on_message(data):
+    def on_message(self, data):
         print(f"message {data} from omspy_broker.Wsocket")
 
-    def on_disconnect(data):
+    def on_disconnect(self, data):
         print(f"disconnected from omspy_broker.Wsocket due to {data}")
 
-    def on_error(data):
+    def on_error(self, data):
         print(f"omspy_broker wsocket error {data}")
 
     def on_message1501_json_full(self, data):
