@@ -48,7 +48,7 @@ class MDSocket_io(socketio.Client):
         """Similarly implement partial json full and binary json full."""
         self.sid.on('1501-json-full', self.on_message1501_json_full)
         self.sid.on('1501-json-partial', self.on_message1501_json_partial)
-
+        """
         self.sid.on('1502-json-full', self.on_message1502_json_full)
         self.sid.on('1502-json-partial', self.on_message1502_json_partial)
 
@@ -65,7 +65,7 @@ class MDSocket_io(socketio.Client):
 
         # self.sid.on('1105-json-full', self.on_message1105_json_full)
         self.sid.on('1105-json-partial', self.on_message1105_json_partial)
-
+        """
         self.sid.on('disconnect', self.on_disconnect)
 
         self.port = "https://mtrade.arhamshare.com"
