@@ -21,7 +21,7 @@ class Wsocket:
         self.soc.on_message1501_json_full = self.on_message1501_json_full
         self.el = self.soc.get_emitter()
         self.el.on('connect', self.on_connect)
-        self.dct = {}
+        self.dct_tline = {}
 
     def on_connect(self):
         print("omspy_broker.XTConnect.Wsocket connected successfully")
