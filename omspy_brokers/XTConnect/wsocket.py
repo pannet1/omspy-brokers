@@ -11,9 +11,9 @@ class Wsocket:
         source = "WEBAPI"
         self.xts = XTSConnect(self.api_key, self.api_secret, source)
         response = self.xts.marketdata_login()
+        print("Login: ", response)
         self.token = response['result']['token']
         self.user_id = response['result']['userID']
-        print("Login: ", response)
         self.soc = MDSocket_io(self.token, self.user_id)
         self.soc.on_connect = self.on_connect
         self.soc.on_message = self.on_message
