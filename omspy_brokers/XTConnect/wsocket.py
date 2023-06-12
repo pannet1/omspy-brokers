@@ -35,7 +35,7 @@ class Wsocket:
     def on_error(self, data):
         print(f"omspy_broker wsocket error {data}")
 
-    def on_message1501_json_full(self, data):
+    def on_message1501_json_full(data):
         dct = json.loads(data)
         print("dddddddddddddddd")
         id = str(dct.get("ExchangeSegment")) + "_" + \
@@ -56,5 +56,6 @@ class Wsocket:
         dct['Bid'] = dct['BidInfo'].get('Price')
         dct.pop('AskInfo')
         dct.pop('BidInfo')
-        self.dct_tline[id] = dct
-        print(self.dct_tline)
+        dct_tline = {}
+        dct_tline[id] = dct
+        print(dct_tline)
