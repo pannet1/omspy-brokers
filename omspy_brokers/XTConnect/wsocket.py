@@ -77,4 +77,5 @@ if __name__ == "__main__":
         {'exchangeSegment': 2, 'exchangeInstrumentID': 51601}
     ]
     ws.xts.send_subscription(Instruments, 1501)
+    print(ws.dct_tline)
     ws.soc.connect()
