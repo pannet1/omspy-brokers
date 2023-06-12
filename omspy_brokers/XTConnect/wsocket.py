@@ -21,6 +21,7 @@ class Wsocket:
         self.soc.on_message1501_json_full = self.on_message1501_json_full
         self.el = self.soc.get_emitter()
         self.el.on('connect', self.on_connect)
+        self.el.on('1501-json-full', self.on_message1501_json_full)
         self.dct_tline = {}
 
     def on_connect(self):
@@ -35,9 +36,14 @@ class Wsocket:
     def on_error(self, data):
         print(f"omspy_broker wsocket error {data}")
 
-    def on_message1501_json_full(data):
+    def on_message1501_json_full(self, data):
         dct = json.loads(data)
-        print("dddddddddddddddd")
+        print("===================================")
+        print("===================================")
+        print("===================================")
+        print("===================================")
+        print("===================================")
+        print("===================================")
         id = str(dct.get("ExchangeSegment")) + "_" + \
             str(dct.get("ExchangeInstrumentID"))
         body = dct.get("Touchline")
@@ -56,6 +62,19 @@ class Wsocket:
         dct['Bid'] = dct['BidInfo'].get('Price')
         dct.pop('AskInfo')
         dct.pop('BidInfo')
-        dct_tline = {}
-        dct_tline[id] = dct
-        print(dct_tline)
+        self.dct_tline[id] = dct
+        print(self.dct_tline)
+
+
+if __name__ == "__main__":
+    from toolkit.fileutils import Fileutils
+    m = Fileutils().get_lst_fm_yml("../../../../arham_marketdata.yaml")
+    ws = Wsocket(m['api'], m['secret'])
+    # Instruments for subscribing
+    Instruments = [
+        {'exchangeSegment': 1, 'exchangeInstrumentID': 2885},
+        {'exchangeSegment': 1, 'exchangeInstrumentID': 26000},
+        {'exchangeSegment': 2, 'exchangeInstrumentID': 51601}
+    ]
+    ws.xts.send_subscription(Instruments, 1501)
+    ws.soc.connect()
