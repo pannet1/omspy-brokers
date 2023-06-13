@@ -1,0 +1,38 @@
+Login:  {'type': 'success', 'code': 'e-response-0010', 'description': 'Provided Valid Credentials', 'result': {'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiJIUjA5OF9kNzMxNGMyYzkyNjYyOWRhMGJmOTg1IiwicHVibGljS2V5IjoiZDczMTRjMmM5MjY2MjlkYTBiZjk4NSIsImlhdCI6MTY4NjU3NDY2MCwiZXhwIjoxNjg2NjYxMDYwfQ.Ye53puUxAVj3b981oGPoSJ_Gq08gecSWZQ11mL5zKhg', 'userID': 'HR098', 'appVersion': '4.0.21'}}
+resp /n {'type': 'success', 'code': 's-session-0001', 'description': 'Instrument subscribed successfully!', 'result': {'mdp': 1501, 'quotesList': [{'exchangeSegment': 1, 'exchangeInstrumentID': 2885}, {'exchangeSegment': 1, 'exchangeInstrumentID': 26000}, {'exchangeSegment': 2, 'exchangeInstrumentID': 51601}], 'listQuotes': ['{"MessageCode":1501,"ExchangeSegment":1,"ExchangeInstrumentID":2885,"LastTradedPrice":2484.15,"LastTradedQunatity":4,"TotalBuyQuantity":1537,"TotalSellQuantity":0,"TotalTradedQuantity":2949893,"AverageTradedPrice":2479.75,"LastTradedTime":1371052796,"LastUpdateTime":1371052796,"PercentChange":0,"Open":2475.5,"High":2489.2,"Low":2465,"Close":2484.15,"TotalValueTraded":null,"AskInfo":{"Size":0,"Price":0,"TotalOrders":0,"BuyBackMarketMaker":0},"BidInfo":{"Size":1537,"Price":2484.15,"TotalOrders":33,"BuyBackMarketMaker":0},"XMarketType":1,"BookType":1}', '{"MessageCode":1501,"ExchangeSegment":1,"ExchangeInstrumentID":26000,"LastTradedPrice":18601.5,"LastTradedQunatity":0,"TotalBuyQuantity":0,"TotalSellQuantity":0,"TotalTradedQuantity":0,"AverageTradedPrice":18601.5,"LastTradedTime":1371060790,"LastUpdateTime":1371060790,"PercentChange":0.21,"Open":18595.05,"High":18633.6,"Low":18559.75,"Close":18601.5,"TotalValueTraded":null,"AskInfo":{"Size":0,"Price":0,"TotalOrders":0,"BuyBackMarketMaker":0},"BidInfo":{"Size":0,"Price":0,"TotalOrders":0,"BuyBackMarketMaker":0},"XMarketType":1,"BookType":1}'], 'Remaining_Subscription_Count': 47}}
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!
+omspy_broker.XTConnect.Wsocket connected successfully
+Market Data Socket disconnected!

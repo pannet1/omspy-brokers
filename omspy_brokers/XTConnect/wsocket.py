@@ -1,6 +1,7 @@
 from omspy_brokers.XTConnect.Connect import XTSConnect
 from omspy_brokers.XTConnect.MarketDataSocketClient import MDSocket_io
 import json
+from time import sleep
 
 
 class Wsocket:
@@ -39,11 +40,6 @@ class Wsocket:
     def on_message1501_json_full(self, data):
         dct = json.loads(data)
         print("===================================")
-        print("===================================")
-        print("===================================")
-        print("===================================")
-        print("===================================")
-        print("===================================")
         id = str(dct.get("ExchangeSegment")) + "_" + \
             str(dct.get("ExchangeInstrumentID"))
         body = dct.get("Touchline")
@@ -63,10 +59,11 @@ class Wsocket:
         dct.pop('AskInfo')
         dct.pop('BidInfo')
         self.dct_tline[id] = dct
-        print(self.dct_tline)
+        print(f"from class {self.dct_tline}")
 
 
 if __name__ == "__main__":
+    import threading
     from toolkit.fileutils import Fileutils
     m = Fileutils().get_lst_fm_yml("../../../../arham_marketdata.yaml")
     ws = Wsocket(m['api'], m['secret'])
@@ -76,6 +73,22 @@ if __name__ == "__main__":
         {'exchangeSegment': 1, 'exchangeInstrumentID': 26000},
         {'exchangeSegment': 2, 'exchangeInstrumentID': 51601}
     ]
-    ws.xts.send_subscription(Instruments, 1501)
-    print(ws.dct_tline)
-    ws.soc.connect()
+    resp = ws.xts.send_subscription(Instruments, 1501)
+    print(f"resp /n {resp}")
+
+    def strategy():
+        while True:
+            resp = ws.xts.get_quote(Instruments, 1501, "JSON")
+            # print(f"strategy: {ws.dct_tline}")
+            print(resp)
+            sleep(1)
+
+    """
+    # thread the strategy and then connect to escape the while loop
+    # thread the connection first and the run strategy
+    """
+    # threading.Thread(target=strategy).run()
+    # ws.soc.connect()
+
+    # threading.Thread(target=ws.soc.connect, daemon=True).run()
+    strategy()
