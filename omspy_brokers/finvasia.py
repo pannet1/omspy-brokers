@@ -29,8 +29,8 @@ class Finvasia(Broker):
         self._imei = imei
         if broker == "profitmart":
             self.finvasia = ShoonyaApiPy(
-                host="http://profitmax.profitmart.in:6002/NorenWClientTP/",
-                websocket='ws://rama.kambala.co.in:5552/NorenWS/',
+                  host="https://profitmax.profitmart.in/NorenWClientTP",
+                  websocket='wss://profitmax.profitmart.in/NorenWSTP/',
             )
         else:
             self.finvasia = ShoonyaApiPy()
@@ -41,11 +41,16 @@ class Finvasia(Broker):
         return {"symbol", "exchange"}
 
     def login(self) -> Union[Dict, None]:
+
+        if len(self._pin)>15:
+            twoFA=self._pin if len(
+                self._pin) == 4 else pyotp.TOTP(self._pin).now()
+        else:
+            twoFA = self._pin
         return self.finvasia.login(
             userid=self._user_id,
             password=self._password,
-            twoFA=self._pin if len(
-                self._pin) == 4 else pyotp.TOTP(self._pin).now(),
+            twoFA = twoFA,
             vendor_code=self._vendor_code,
             api_secret=self._app_key,
             imei=self._imei,
