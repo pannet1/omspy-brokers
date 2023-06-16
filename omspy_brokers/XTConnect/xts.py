@@ -101,6 +101,16 @@ class Xts(Broker):
             resp = self.broker.get_holding(self.user_id)
             lst = resp.get('result').get("RMSHoldings")
         except Exception as e:
-            print(f"{e} in getting holding")
+            print(f"{e} in getting holdings")
         else:
             return lst
+
+    @property
+    def margins(self):
+        lst = []
+        try:
+            resp = self.broker.get_balance(self.user_id)
+        except Exception as e:
+            print(f"{e} in getting margins")
+        else:
+            return resp
