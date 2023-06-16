@@ -110,7 +110,8 @@ class Xts(Broker):
         lst = []
         try:
             resp = self.broker.get_balance(self.user_id)
+            lst = resp.get('result')
         except Exception as e:
             print(f"{e} in getting margins")
         else:
-            return resp
+            return lst
