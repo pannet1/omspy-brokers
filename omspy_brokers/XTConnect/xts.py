@@ -110,7 +110,13 @@ class Xts(Broker):
         lst = []
         try:
             resp = self.broker.get_balance(self.user_id)
-            lst = resp.get('result').get("BalanceList")
+            lst_bal = resp.get('result').get("BalanceList")
+            # Extract 'limitObject' values from the list of dictionaries
+            lst_lmt = [obj['limitObject']
+                       for obj in lst_bal if 'limitObject' in obj]
+            # Remove 'AccountID' key from each dictionary
+            lst = [{k: v for k, v in d.items() if k != 'AccountID'}
+                   for d in lst_lmt]
         except Exception as e:
             print(f"{e} in getting margins")
         else:
