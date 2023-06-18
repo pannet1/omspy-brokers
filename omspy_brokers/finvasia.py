@@ -29,8 +29,8 @@ class Finvasia(Broker):
         self._imei = imei
         if broker == "profitmart":
             self.finvasia = ShoonyaApiPy(
-                  host="https://profitmax.profitmart.in/NorenWClientTP",
-                  websocket='wss://profitmax.profitmart.in/NorenWSTP/',
+                host="https://profitmax.profitmart.in/NorenWClientTP",
+                websocket='wss://profitmax.profitmart.in/NorenWSTP/',
             )
         else:
             self.finvasia = ShoonyaApiPy()
@@ -42,15 +42,15 @@ class Finvasia(Broker):
 
     def login(self) -> Union[Dict, None]:
 
-        if len(self._pin)>15:
-            twoFA=self._pin if len(
+        if len(self._pin) > 15:
+            twoFA = self._pin if len(
                 self._pin) == 4 else pyotp.TOTP(self._pin).now()
         else:
             twoFA = self._pin
         return self.finvasia.login(
             userid=self._user_id,
             password=self._password,
-            twoFA = twoFA,
+            twoFA=twoFA,
             vendor_code=self._vendor_code,
             api_secret=self._app_key,
             imei=self._imei,
@@ -182,34 +182,44 @@ class Finvasia(Broker):
 
     @pre
     def order_place(self, **kwargs) -> Union[str, None]:
-        side = kwargs.pop("side")
-        order_type = kwargs.pop("order_type", "LIMIT")
+        buy_or_sell = kwargs.pop("side")
+        product_type = kwargs.pop("product", "I")
+        exchange = kwargs.pop("exchange")
+        # kwargs['quantity']
+        discloseqty = kwargs.pop("disclosed_quantity", 0)
+        price_type = kwargs.pop("order_type")
+        if price_type:
+            price_type = self.get_order_type(price_type)
+        tradingsymbol = kwargs.pop("symbol")
+        if tradingsymbol and exchange:
+            tradingsymbol = tradingsymbol.upper()
+            tradingsymbol = self._convert_symbol(
+                tradingsymbol, exchange=exchange)
         price = kwargs.pop("price")
         if price < 0:
             price = 0.05
-        exchange = kwargs.pop("exchange", "NFO")
-        symbol = kwargs.pop("symbol")
-        symbol = self._convert_symbol(symbol, exchange=exchange)
-        product_type = kwargs.pop("product_type", "I")
-        if order_type:
-            order_type = self.get_order_type(order_type)
-        if side:
-            side = side.upper()[0]
-        if symbol:
-            symbol = symbol.upper()
+        trigger_price = kwargs.pop("trigger_price")
+        if trigger_price < 0:
+            trigger_price = 0.05
+        retention = kwargs.pop("validity", "DAY")
+        remarks = kwargs.pop("tag", "no_remarks")
         order_args = dict(
-            tradingsymbol=symbol,
-            buy_or_sell=side,
-            price_type=order_type,
-            exchange=exchange,
-            retention="DAY",
+            buy_or_sell=buy_or_sell,
             product_type=product_type,
-            discloseqty=0,
-            price=abs(price)
+            exchange=exchange,
+            tradingsymbol=tradingsymbol,
+            discloseqty=discloseqty,
+            price_type=price_type,
+            price=price,
+            trigger_price=trigger_price,
+            retention=retention,
+            remarks=remarks
         )
+        # we have only quantity in kwargs now
         order_args.update(kwargs)
         response = self.finvasia.place_order(**order_args)
-        return response.get("norenordno")
+        if isinstance(response, dict) and response.get("norenordno") is not None:
+            return response["norenordno"]
 
     def order_cancel(self, order_id: str) -> Union[Dict, None]:
         """

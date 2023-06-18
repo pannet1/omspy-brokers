@@ -1,7 +1,11 @@
 order_place:
+  symbol: tradingsymbol
+  buy_or_sell: side
+  order_type: price_type
   validity: retention
   disclosed_quantity: discloseqty
   product: product_type
+  tag: remarks
 order_modify:
   quantity: newquantity
   price: newprice
