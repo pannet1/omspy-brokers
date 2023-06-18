@@ -195,11 +195,11 @@ class Finvasia(Broker):
             tradingsymbol = tradingsymbol.upper()
             tradingsymbol = self._convert_symbol(
                 tradingsymbol, exchange=exchange)
-        price = kwargs.pop("price")
-        if price < 0:
+        price = kwargs.pop("price", None)
+        if price and price < 0:
             price = 0.05
-        trigger_price = kwargs.pop("trigger_price")
-        if trigger_price < 0:
+        trigger_price = kwargs.pop("trigger_price", None)
+        if trigger_price and trigger_price < 0:
             trigger_price = 0.05
         retention = kwargs.pop("validity", "DAY")
         remarks = kwargs.pop("tag", "no_remarks")
