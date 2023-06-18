@@ -1,6 +1,6 @@
 order_place:
   symbol: tradingsymbol
-  buy_or_sell: side
+  side : buy_or_sell 
   order_type: price_type
   validity: retention
   disclosed_quantity: discloseqty
