@@ -33,7 +33,7 @@ class Wsocket:
 
         if (
             self.md_login_response.get("result") is not None
-            # and isinstance(self.md_login_response, self.md_login_response['result'])
+            and isinstance(self.md_login_response, dict)
             and "token" in self.md_login_response["result"]
             and "userID" in self.md_login_response["result"]
             and self.md_login_response["result"].get("token") is not None
@@ -78,9 +78,9 @@ class Wsocket:
             try:
                 self.soc.connect()
             except socketio.exceptions.ConnectionError as err:
-                self.tprint("ConnectionError: %s" + err)
+                self.tprint(f"ConnectionError:  {err}")
             except Exception as err:
-                self.tprint("WebsocketError: %s" + err)
+                self.tprint(f"WebsocketError: {err}")
             else:
                 sleep(3)
 
