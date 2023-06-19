@@ -39,13 +39,41 @@ class Xts(Broker):
     @pre
     def order_place(self, **kwargs):
         try:
-            resp = self.broker.place_order(**kwargs)
+            productType = kwargs.pop('product', 'NRML')
+            orderType = kwargs.pop('order_type', 'MARKET')
+            orderSide = kwargs.pop('side')
+            timeInForce = kwargs.pop('validity', 'DAY')
+            disclosedQuantity = kwargs.pop('disclosed_quantity', 0)
+            orderQuantity = kwargs.pop('quantity', 0)
+            limitPrice = kwargs.pop('trigger_price', 0)
+            stopPrice = kwargs.pop('price', 0)
+            orderUniqueIdentifier = kwargs.pop('tag', 'no_tag')
+            args = {
+                'productType': productType,
+                'orderType': orderType,
+                'orderSide': orderSide,
+                'timeInForce': timeInForce,
+                'disclosedQuantity': disclosedQuantity,
+                'orderQuantity': orderQuantity,
+                'limitPrice': limitPrice,
+                'stopPrice': stopPrice,
+                'orderUniqueIdentifier': orderUniqueIdentifier,
+                'clientID': self.user_id,
+            }
+            args.update(kwargs)
+            resp = self.broker.place_order(**args)
+            if (
+                resp is not None and isinstance(resp, dict)
+                and isinstance(resp.get('result'), dict)
+                and isinstance(resp['result'].get('AppOrderID', False))
+            ):
+                order_id = resp['result']['AppOrderID']
         except Exception as e:
             print(f"{e} in order_place")
         else:
-            return resp
+            return order_id
 
-    @pre
+    @ pre
     def order_modify(self, **kwargs):
         try:
             resp = self.broker.modify_order(**kwargs)
@@ -54,7 +82,7 @@ class Xts(Broker):
         else:
             return resp
 
-    @pre
+    @ pre
     def order_cancel(self, **kwargs):
         try:
             resp = self.broker.cancel_order(**kwargs)
@@ -63,8 +91,8 @@ class Xts(Broker):
         else:
             return resp
 
-    @property
-    @post
+    @ property
+    @ post
     def orders(self) -> list[dict, None]:
         lst = []
         try:
@@ -75,8 +103,8 @@ class Xts(Broker):
         else:
             return lst
 
-    @property
-    @post
+    @ property
+    @ post
     def positions(self) -> list[dict, None]:
         lst = []
         try:
@@ -87,8 +115,8 @@ class Xts(Broker):
         else:
             return lst
 
-    @property
-    @post
+    @ property
+    @ post
     def trades(self) -> list[dict, None]:
         lst = []
         try:
@@ -99,7 +127,7 @@ class Xts(Broker):
         else:
             return lst
 
-    @property
+    @ property
     def holdings(self) -> Union[dict, None]:
         lst = []
         try:
@@ -110,7 +138,7 @@ class Xts(Broker):
         else:
             return lst
 
-    @property
+    @ property
     def margins(self):
         lst = []
         try:
