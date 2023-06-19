@@ -67,11 +67,9 @@ class Xts(Broker):
                 and isinstance(resp.get('result'), dict)
                 and isinstance(resp['result'].get('AppOrderID', False))
             ):
-                order_id = resp['result']['AppOrderID']
+                return resp['result']['AppOrderID']
         except Exception as e:
             print(f"{e} in order_place")
-        else:
-            return order_id
 
     @ pre
     def order_modify(self, **kwargs):
