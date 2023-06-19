@@ -24,7 +24,12 @@ class Xts(Broker):
     def authenticate(self) -> bool:
         try:
             resp = self.broker.interactive_login()
-            self.token = resp.get('result').get('token')
+            if (
+                resp is not None and isinstance(resp, dict)
+                and isinstance(resp['result'], dict)
+                and isinstance(resp['result'].get('token'), str)
+            ):
+                self.token = resp['result']['token']
         except Exception as e:
             print(f"{e} while authenticating")
             return False

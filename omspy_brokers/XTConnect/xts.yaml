@@ -1,5 +1,13 @@
 order_place:
-  product: productType
+  productType: product 
+  orderType: order_type
+  orderSide: side 
+  TimeInForce: validity
+  disclosedQuantity: disclosed_quantity
+  orderQuantity: quantity 
+  limitPrice: price 
+  stopPrice: trigger_price
+  orderUniqueIdentifier: tag
 positions:
   exchangeSegment: exchange
 orders:
