@@ -48,7 +48,7 @@ class Xts(Broker):
             limitPrice = kwargs.pop('trigger_price', 0)
             stopPrice = kwargs.pop('price', 0)
             orderUniqueIdentifier = kwargs.pop('tag', 'no_tag')
-            args = {
+            order_args = {
                 'productType': productType,
                 'orderType': orderType,
                 'orderSide': orderSide,
@@ -60,15 +60,16 @@ class Xts(Broker):
                 'orderUniqueIdentifier': orderUniqueIdentifier,
                 'clientID': self.user_id,
             }
-            args.update(kwargs)
-            resp = self.broker.place_order(**args)
-            print(f"resp {resp} for args {args}")
+            order_args.update(kwargs)
+            resp = self.broker.place_order(**order_args)
             if (
                 resp is not None and isinstance(resp, dict)
                 and isinstance(resp.get('result'), dict)
                 and isinstance(resp['result'].get('AppOrderID', False))
             ):
                 return resp['result']['AppOrderID']
+            else:
+                print(f"resp {resp} for args {args}")
         except Exception as e:
             print(f"{e} in order_place")
 
