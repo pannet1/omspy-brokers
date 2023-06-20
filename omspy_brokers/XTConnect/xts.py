@@ -62,7 +62,7 @@ class Xts(Broker):
             }
             args.update(kwargs)
             resp = self.broker.place_order(**args)
-            print(resp)
+            print(f"resp {resp} for args {args}")
             if (
                 resp is not None and isinstance(resp, dict)
                 and isinstance(resp.get('result'), dict)
