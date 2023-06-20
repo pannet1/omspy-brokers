@@ -48,22 +48,22 @@ class Xts(Broker):
             limitPrice = kwargs.pop('trigger_price', 0)
             stopPrice = kwargs.pop('price', 0)
             orderUniqueIdentifier = kwargs.pop('tag', 'no_tag')
-            order_args = {
-                'productType': productType,
-                'orderType': orderType,
-                'orderSide': orderSide,
-                'timeInForce': timeInForce,
-                'disclosedQuantity': disclosedQuantity,
-                'orderQuantity': orderQuantity,
-                'limitPrice': limitPrice,
-                'stopPrice': stopPrice,
-                'orderUniqueIdentifier': orderUniqueIdentifier,
-                'clientID': self.user_id,
-            }
+            order_args = dict(
+                productType=productType,
+                orderType=orderType,
+                orderSide=orderSide,
+                timeInForce=timeInForce,
+                disclosedQuantity=disclosedQuantity,
+                orderQuantity=orderQuantity,
+                limitPrice=limitPrice,
+                stopPrice=stopPrice,
+                orderUniqueIdentifier=orderUniqueIdentifier,
+                clientID=self.user_id,
+            )
             order_args.update(kwargs)
             self.broker.place_order(**order_args)
-            print(order_args)
             """"
+            print(resp)
             if (
                 resp is not None and isinstance(resp, dict)
                 and isinstance(resp['result'], dict)
