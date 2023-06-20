@@ -60,10 +60,11 @@ class Xts(Broker):
                 'orderUniqueIdentifier': orderUniqueIdentifier,
                 'clientID': self.user_id,
             }
+            print(kwargs)
+            """
             order_args.update(kwargs)
             resp = self.broker.place_order(**order_args)
             print(resp)
-            """
             if (
                 resp is not None and isinstance(resp, dict)
                 and isinstance(resp['result'], dict)
