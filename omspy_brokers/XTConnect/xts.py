@@ -60,9 +60,9 @@ class Xts(Broker):
                 'orderUniqueIdentifier': orderUniqueIdentifier,
                 'clientID': self.user_id,
             }
-            print(kwargs)
-            """
             order_args.update(kwargs)
+            print(order_args)
+            """
             resp = self.broker.place_order(**order_args)
             print(resp)
             if (
