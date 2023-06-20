@@ -62,6 +62,7 @@ class Xts(Broker):
             }
             order_args.update(kwargs)
             self.broker.place_order(**order_args)
+            print(order_args)
             """"
             if (
                 resp is not None and isinstance(resp, dict)
