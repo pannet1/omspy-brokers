@@ -64,12 +64,12 @@ class Xts(Broker):
             resp = self.broker.place_order(**order_args)
             if (
                 resp is not None and isinstance(resp, dict)
-                and isinstance(resp.get('result'), dict)
-                and isinstance(resp['result'].get('AppOrderID', False))
+                and isinstance(resp['result'], dict)
+                and resp['result'].get('AppOrderID', False)
             ):
                 return resp['result']['AppOrderID']
             else:
-                print(f"resp {resp} for args {args}")
+                print(f"resp {resp} for args {order_args}")
         except Exception as e:
             print(f"{e} in order_place")
 
