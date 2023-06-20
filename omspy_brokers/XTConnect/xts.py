@@ -39,6 +39,7 @@ class Xts(Broker):
     @pre
     def order_place(self, **kwargs):
         try:
+            """
             productType = kwargs.pop('product', 'NRML')
             orderType = kwargs.pop('order_type', 'MARKET')
             orderSide = kwargs.pop('side')
@@ -61,7 +62,8 @@ class Xts(Broker):
                 clientID=self.user_id,
             )
             order_args.update(kwargs)
-            self.broker.place_order(**order_args)
+            """
+            self.broker.place_order(**kwargs)
             """"
             print(resp)
             if (
