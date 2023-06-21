@@ -62,7 +62,6 @@ class Xts(Broker):
             )
             order_args.update(kwargs)
             resp = self.broker.place_order(**order_args)
-            print(resp)
             if (
                 resp is not None and isinstance(resp, dict)
                 and isinstance(resp['result'], dict)
@@ -70,7 +69,7 @@ class Xts(Broker):
             ):
                 return resp['result']['AppOrderID']
             else:
-                print(f"resp {resp} for args {order_args}")
+                print(f"resp for args {order_args}")
         except Exception as e:
             print(f"{e} in order_place")
 
