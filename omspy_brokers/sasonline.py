@@ -4,7 +4,7 @@ import pyotp
 from typing import List, Dict
 
 
-class Alphatrade(Broker):
+class Sasonline(Broker):
     """
     Automated Trading class
     """
@@ -15,7 +15,7 @@ class Alphatrade(Broker):
         self.totp = totp
         pin = f"{int(pyotp.TOTP(totp).now()):06d}"
         self.broker = AlphaTrade(login_id=user_id, password=passwd, twofa=pin)
-        super(Alphatrade, self).__init__()
+        super(Sasonline, self).__init__()
 
     def authenticate(self) -> str:
         """
