@@ -13,7 +13,7 @@ class Sasonline(Broker):
         self.user_id = user_id
         self.passwd = passwd
         self.totp = totp
-        pin = f"{int(pyotp.TOTP(totp).now()):06d}"
+        pin = totp if len(totp) < 11 else f"{int(pyotp.TOTP(totp).now()):06d}"
         self.broker = AlphaTrade(login_id=user_id, password=passwd, twofa=pin)
         super(Sasonline, self).__init__()
 
