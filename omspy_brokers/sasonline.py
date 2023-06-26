@@ -13,17 +13,19 @@ class Sasonline(Broker):
         self.user_id = user_id
         self.passwd = passwd
         self.totp = totp
-        pin = totp if len(totp) < 11 else f"{int(pyotp.TOTP(totp).now()):06d}"
-        self.broker = AlphaTrade(login_id=user_id, password=passwd, twofa=pin)
+        pin = f"{int(pyotp.TOTP(totp).now()):06d}"
+        access_token = open('access_token.txt', 'r').read().rstrip()
+        self.broker = AlphaTrade(
+            login_id=user_id, password=passwd, twofa=pin, accesss_token=access_token)
         super(Sasonline, self).__init__()
 
-    def authenticate(self) -> str:
+    def authenticate(self) -> bool:
         """
         Authenticate the user
         """
         try:
-            access_token = open('access_token.txt', 'r').read().rstrip()
-            self.access_token = access_token
+            resp = self.broker.get_profile()
+            print(resp)
         except Exception as e:
             print('Exception occurred :: {}'.format(e))
             return False
