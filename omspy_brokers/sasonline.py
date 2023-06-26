@@ -16,7 +16,7 @@ class Sasonline(Broker):
         pin = f"{int(pyotp.TOTP(totp).now()):06d}"
         access_token = open('access_token.txt', 'r').read().rstrip()
         self.broker = AlphaTrade(
-            login_id=user_id, password=passwd, twofa=pin, accesss_token=access_token)
+            login_id=user_id, password=passwd, twofa=pin, access_token=access_token)
         super(Sasonline, self).__init__()
 
     def authenticate(self) -> bool:
