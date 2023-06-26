@@ -45,25 +45,25 @@ class Sasonline(Broker):
 
     @ pre
     def order_place(self, **kwargs):
-        pass
+        return self.broker.place_order(**kwargs)
 
     def order_modify(self, **kwargs):
-        pass
+        return self.broker.modify_order(**kwargs)
 
-    def order_cancel(self, order_id):
-        pass
+    def order_cancel(self, **kwargs):
+        return self.broker.cancel_order(**kwargs)
 
     @ property
     @ post
     def orders(self) -> List[Dict]:
-        return self.alice.get_order_history("")
+        return self.broker.get_order_history()
 
     @ property
     @ post
     def positions(self):
-        pass
+        return self.broker.get_daywise_positions()
 
     @ property
     @ post
     def trades(self):
-        pass
+        return self.broker.get_trade_book()
