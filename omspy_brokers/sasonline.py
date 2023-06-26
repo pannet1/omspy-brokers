@@ -2,6 +2,8 @@ from alphatrade import AlphaTrade
 from omspy.base import Broker, pre, post
 import pyotp
 from typing import List, Dict
+from toolkit.fileutils import Fileutils
+from toolkit.utilities import Utilities
 
 
 class Sasonline(Broker):
@@ -14,6 +16,10 @@ class Sasonline(Broker):
         self.passwd = passwd
         self.totp = totp
         pin = f"{int(pyotp.TOTP(totp).now()):06d}"
+        if Fileutils().is_file_not_2day('access_token.txt'):
+            AlphaTrade(
+                login_id=user_id, password=passwd, twofa=pin, access_token=None)
+            Utilities().slp_for(1)
         access_token = open('access_token.txt', 'r').read().rstrip()
         self.broker = AlphaTrade(
             login_id=user_id, password=passwd, twofa=pin, access_token=access_token)
@@ -25,7 +31,12 @@ class Sasonline(Broker):
         """
         try:
             resp = self.broker.get_profile()
-            print(resp)
+            if (
+                resp is not None
+                and isinstance(resp, dict)
+                and isinstance(resp['data'], dict)
+            ):
+                print(resp['data'])
         except Exception as e:
             print('Exception occurred :: {}'.format(e))
             return False
