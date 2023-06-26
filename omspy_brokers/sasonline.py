@@ -16,7 +16,7 @@ class Sasonline(Broker):
         self.passwd = passwd
         self.totp = totp
         pin = f"{int(pyotp.TOTP(totp).now()):06d}"
-        if Fileutils().is_file_not_2day('access_token.txt'):
+        if Fileutils().is_file_not_2day('./access_token.txt'):
             AlphaTrade(
                 login_id=user_id, password=passwd, twofa=pin, access_token=None)
             Utilities().slp_for(1)
