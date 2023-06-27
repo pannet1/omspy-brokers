@@ -85,8 +85,6 @@ class AngelOne(Broker):
             print(f"trying to place order for {kwargs}")
             return self.obj.placeOrder(kwargs)
         except Exception as err:
-            print(f"obj is {self.obj}")
-            print(f"kwargs is {kwargs}")
             print("Order placement failed: {}".format(err))
 
     def order_modify(self, kwargs: List[Dict]):
