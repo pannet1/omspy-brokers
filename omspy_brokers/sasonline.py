@@ -58,8 +58,9 @@ class Sasonline(Broker):
         try:
             resp = self.broker.get_order_history()
             if (
-                resp is not None and isinstance(
-                    resp, dict) and isinstance(resp['data'], dict)
+                resp is not None
+                and isinstance(resp, dict)
+                and isinstance(resp['data'], dict)
             ):
                 return resp['data']
         except Exception as e:
@@ -72,8 +73,9 @@ class Sasonline(Broker):
         try:
             resp = self.broker.get_day_positions()
             if (
-                resp is not None and isinstance(
-                    resp, dict) and isinstance(resp['data'], dict)
+                resp is not None
+                and isinstance(resp, dict)
+                and isinstance(resp['data'], dict)
             ):
                 return resp['data']
         except Exception as e:
@@ -86,8 +88,9 @@ class Sasonline(Broker):
         try:
             resp = self.broker.get_trade_book()
             if (
-                resp is not None and isinstance(
-                    resp, dict) and isinstance(resp['data'], dict)
+                resp is not None
+                and isinstance(resp, dict)
+                and isinstance(resp['data'], dict)
             ):
                 return resp['data']
         except Exception as e:
@@ -98,7 +101,8 @@ class Sasonline(Broker):
 if __name__ == "__main__":
     import pprint
     dct = Fileutils().get_lst_fm_yml("../../../sas.yaml")
-    sas = Sasonline(dct['login_id'], dct['password'], dct['totp'])
+    # sas = Sasonline(dct['login_id'], dct['password'], dct['totp'])
+    sas = Sasonline(**dct)
     if sas.authenticate():
         print("logging in success")
     resp = sas.positions
