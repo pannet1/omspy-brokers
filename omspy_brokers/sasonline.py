@@ -1,7 +1,6 @@
 from alphatrade import AlphaTrade
 from omspy.base import Broker, pre, post
 import pyotp
-from typing import List, Dict
 from toolkit.fileutils import Fileutils
 from toolkit.utilities import Utilities
 
@@ -55,15 +54,54 @@ class Sasonline(Broker):
 
     @ property
     @ post
-    def orders(self) -> List[Dict]:
-        return self.broker.get_order_history()
+    def orders(self) -> dict:
+        try:
+            resp = self.broker.get_order_history()
+            if (
+                resp is not None and isinstance(
+                    resp, dict) and isinstance(resp['data'], dict)
+            ):
+                return resp['data']
+        except Exception as e:
+            print(f"exception {str(e)} in orders")
+            return {[]}
 
     @ property
     @ post
-    def positions(self):
-        return self.broker.get_daywise_positions()
+    def positions(self) -> dict:
+        try:
+            resp = self.broker.get_day_positions()
+            if (
+                resp is not None and isinstance(
+                    resp, dict) and isinstance(resp['data'], dict)
+            ):
+                return resp['data']
+        except Exception as e:
+            print(f"exception {str(e)} in orders")
+            return {}
 
     @ property
     @ post
-    def trades(self):
-        return self.broker.get_trade_book()
+    def trades(self) -> dict:
+        try:
+            resp = self.broker.get_trade_book()
+            if (
+                resp is not None and isinstance(
+                    resp, dict) and isinstance(resp['data'], dict)
+            ):
+                return resp['data']
+        except Exception as e:
+            print(f"exception {str(e)} in orders")
+            return {}
+
+
+if __name__ == "__main__":
+    import pprint
+    dct = Fileutils().get_lst_fm_yml("../../../sas.yaml")
+    sas = Sasonline(dct['login_id'], dct['password'], dct['totp'])
+    if sas.authenticate():
+        print("logging in success")
+    resp = sas.positions
+    pprint(resp.keys())
+    resp = sas.trades
+    pprint(resp)
