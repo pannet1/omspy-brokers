@@ -1,6 +1,6 @@
 from typing import List, Dict
 from omspy.base import Broker, pre, post
-from smartapi import SmartConnect
+from SmartApi import SmartConnect
 import pyotp
 
 
