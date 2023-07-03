@@ -24,17 +24,21 @@ class Xts(Broker):
     def authenticate(self) -> bool:
         try:
             resp = self.broker.interactive_login()
-            if (
-                resp is not None and isinstance(resp, dict)
+            if resp is not None:
+                print("no authentication response")
+                return False
+            elif (
+                isinstance(resp, dict)
                 and isinstance(resp['result'], dict)
                 and isinstance(resp['result'].get('token'), str)
             ):
                 self.token = resp['result']['token']
+                return True
+            else:
+                return False
         except Exception as e:
             print(f"{e} while authenticating")
             return False
-        else:
-            return True
 
     @ pre
     def order_place(self, **kwargs):
