@@ -57,9 +57,10 @@ class Sasonline(Broker):
     def orders(self) -> dict:
         try:
             resp = self.broker.get_order_history()
-            if (
-                resp is not None
-                and isinstance(resp, dict)
+            if resp is None:
+                return {}
+            elif (
+                isinstance(resp, dict)
                 and isinstance(resp['data'], dict)
             ):
                 return resp['data']
@@ -72,9 +73,10 @@ class Sasonline(Broker):
     def positions(self) -> dict:
         try:
             resp = self.broker.get_daywise_positions()
-            if (
-                resp is not None
-                and isinstance(resp, dict)
+            if resp is None:
+                return {}
+            elif (
+                isinstance(resp, dict)
                 and isinstance(resp['data'], dict)
             ):
                 return resp['data']
@@ -87,9 +89,10 @@ class Sasonline(Broker):
     def trades(self) -> dict:
         try:
             resp = self.broker.get_trade_book()
-            if (
-                resp is not None
-                and isinstance(resp, dict)
+            if resp is None:
+                return {}
+            elif (
+                isinstance(resp, dict)
                 and isinstance(resp['data'], dict)
             ):
                 return resp['data']
@@ -99,13 +102,13 @@ class Sasonline(Broker):
 
 
 if __name__ == "__main__":
-    import pprint
+    from pprint import pprint
     dct = Fileutils().get_lst_fm_yml("../../../sas.yaml")
     # sas = Sasonline(dct['login_id'], dct['password'], dct['totp'])
     sas = Sasonline(**dct)
     if sas.authenticate():
         print("logging in success")
     resp = sas.positions
-    print(resp.keys())
     resp = sas.trades
-    print(resp)
+    resp = sas.orders
+    pprint(resp)
