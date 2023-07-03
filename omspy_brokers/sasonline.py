@@ -10,7 +10,7 @@ class Sasonline(Broker):
     Automated Trading class
     """
 
-    def __init__(self, user_id, passwd, totp):
+    def __init__(self, user_id, passwd, totp, lst_exch=['NFO']):
         self.user_id = user_id
         self.passwd = passwd
         self.totp = totp
@@ -21,7 +21,7 @@ class Sasonline(Broker):
             Utilities().slp_for(1)
         access_token = open('access_token.txt', 'r').read().rstrip()
         self.broker = AlphaTrade(
-            login_id=user_id, password=passwd, twofa=pin, access_token=access_token)
+            login_id=user_id, password=passwd, twofa=pin, access_token=access_token, master_contracts_to_download=lst_exch)
         super(Sasonline, self).__init__()
 
     def authenticate(self) -> bool:
@@ -71,7 +71,7 @@ class Sasonline(Broker):
     @ post
     def positions(self) -> dict:
         try:
-            resp = self.broker.get_day_positions()
+            resp = self.broker.get_daywise_positions()
             if (
                 resp is not None
                 and isinstance(resp, dict)
@@ -106,6 +106,6 @@ if __name__ == "__main__":
     if sas.authenticate():
         print("logging in success")
     resp = sas.positions
-    pprint(resp.keys())
+    print(resp.keys())
     resp = sas.trades
-    pprint(resp)
+    print(resp)
