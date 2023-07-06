@@ -10,7 +10,7 @@ class Sasonline(Broker):
     Automated Trading class
     """
 
-    def __init__(self, user_id, passwd, totp):
+    def __init__(self, user_id, passwd, totp, lst_exch=['NFO', 'NSE']):
         self.user_id = user_id
         self.passwd = passwd
         self.totp = totp
@@ -20,7 +20,6 @@ class Sasonline(Broker):
                 login_id=user_id, password=passwd, twofa=pin, access_token=None)
             Utilities().slp_for(1)
         access_token = open('access_token.txt', 'r').read().rstrip()
-        lst_exch = ['NFO', 'NSE']
         self.broker = AlphaTrade(
             login_id=user_id, password=passwd, twofa=pin, access_token=access_token, master_contracts_to_download=lst_exch)
         super(Sasonline, self).__init__()
