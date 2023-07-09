@@ -57,7 +57,7 @@ class Profitmart(Broker):
         Authenticate the user
         """
         resp =  self.login()
-        if resp is not None:
+        if resp is None:
             print("no response")
             return False
         elif(
