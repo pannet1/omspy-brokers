@@ -26,7 +26,7 @@ class Profitmart(Broker):
         self._vendor_code = vendor_code
         self._app_key = app_key
         self._imei = imei
-        self.broker = NorenApi(
+        self._broker = NorenApi(
             host="https://profitmax.profitmart.in/NorenWClientTP",
             websocket='wss://profitmax.profitmart.in/NorenWSTP/',
         )
@@ -43,7 +43,7 @@ class Profitmart(Broker):
                 self._pin) == 4 else pyotp.TOTP(self._pin).now()
         else:
             twoFA = self._pin
-        return self.broker.login(
+        return self._broker.login(
             userid=self._user_id,
             password=self._password,
             twoFA=twoFA,
@@ -83,7 +83,7 @@ class Profitmart(Broker):
     @property
     @post
     def orders(self) -> List[Dict]:
-        orderbook = self.broker.get_order_book()
+        orderbook = self._broker.get_order_book()
         if orderbook is None:
             return []
         if len(orderbook) == 0:
@@ -119,7 +119,7 @@ class Profitmart(Broker):
     @property
     @post
     def positions(self) -> List[Dict]:
-        positionbook = self.broker.get_positions()
+        positionbook = self._broker.get_positions()
         if len(positionbook) == 0:
             return positionbook
 
@@ -157,7 +157,7 @@ class Profitmart(Broker):
     @property
     @post
     def trades(self) -> List[Dict]:
-        tradebook = self.broker.get_trade_book()
+        tradebook = self._broker.get_trade_book()
         if len(tradebook) == 0:
             return tradebook
 
@@ -225,7 +225,7 @@ class Profitmart(Broker):
         )
         # we have only quantity in kwargs now
         order_args.update(kwargs)
-        response = self.broker.place_order(**order_args)
+        response = self._broker.place_order(**order_args)
         if isinstance(response, dict) and response.get("norenordno") is not None:
             return response["norenordno"]
 
@@ -233,7 +233,7 @@ class Profitmart(Broker):
         """
         Cancel an existing order
         """
-        return self.broker.cancel_order(orderno=order_id)
+        return self._broker.cancel_order(orderno=order_id)
 
     @pre
     def order_modify(self, **kwargs) -> Union[str, None]:
@@ -256,25 +256,29 @@ class Profitmart(Broker):
             tradingsymbol=symbol,
         )
         order_args.update(kwargs)
-        return self.broker.modify_order(**order_args)
+        return self._broker.modify_order(**order_args)
 
     def instrument_symbol(self, exch: str, txt: str) -> int:
-        res = self.broker.searchscrip(exchange=exch, searchtext=txt)
+        res = self._broker.searchscrip(exchange=exch, searchtext=txt)
         return res['values'][0].get('token', 0)
 
     def historical(self, exch: str, tkn: str, fm: str, to: str):
-        return self.broker.get_time_price_series(exch, tkn, fm, to)
+        return self._broker.get_time_price_series(exch, tkn, fm, to)
 
     def scriptinfo(self, exch: str, tkn: str):
-        return self.broker.get_quotes(exch, tkn)
+        return self._broker.get_quotes(exch, tkn)
 
 
 if __name__ == "__main__":
     from toolkit.fileutils import Fileutils
 
     m = Fileutils().get_lst_fm_yml("../../../profitmart.yaml")
-    pmart = Profitmart(user_id=m['uid'], password=m['pwd'], pin=m['factor2'],
-                       vendor_code=m['vc'], app_key=m['app_key'], imei="1234",
+    pmart = Profitmart(user_id=m['uid'],
+                       password=m['pwd'],
+                       pin=m['factor2'],
+                       vendor_code=m['vc'],
+                       app_key=m['app_key'],
+                       imei="1234",
                        )
     if pmart.authenticate():
         print("success")
