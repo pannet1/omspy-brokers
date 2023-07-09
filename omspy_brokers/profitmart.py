@@ -57,9 +57,11 @@ class Profitmart(Broker):
         Authenticate the user
         """
         resp =  self.login()
-        if(
-            resp is not None
-            and isinstance(resp, dict)
+        if resp is not None:
+            print("no response")
+            return False
+        elif(
+            isinstance(resp, dict)
             and resp.get('susertoken', False)
         ):
             print(f"Happy Trading {resp['uname']}")
@@ -273,6 +275,7 @@ if __name__ == "__main__":
     from toolkit.fileutils import Fileutils
 
     m = Fileutils().get_lst_fm_yml("../../../profitmart.yaml")
+    print(m)
     pmart = Profitmart(user_id=m['uid'],
                        password=m['pwd'],
                        pin=m['factor2'],
