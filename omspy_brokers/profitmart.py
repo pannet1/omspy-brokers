@@ -19,7 +19,6 @@ class Profitmart(Broker):
         vendor_code: str,
         app_key: str,
         imei: str,
-        broker: str = ""
     ):
         self._user_id = user_id
         self._password = password
@@ -53,11 +52,21 @@ class Profitmart(Broker):
             imei=self._imei,
         )
 
-    def authenticate(self) -> Union[Dict, None]:
+    def authenticate(self) ->bool:
         """
         Authenticate the user
         """
-        return self.login()
+        resp =  self.login()
+        if(
+            resp is not None
+            and isinstance(resp, dict)
+            and resp.get('susertoken', False)
+        ):
+            print(f"Happy Trading {resp['uname']}")
+            self._token = resp['susertoken']
+            return True
+        else:
+            return False
 
     def _convert_symbol(self, symbol: str, exchange: str = "NSE") -> str:
         """
@@ -75,6 +84,8 @@ class Profitmart(Broker):
     @post
     def orders(self) -> List[Dict]:
         orderbook = self.broker.get_order_book()
+        if orderbook is None:
+            return []
         if len(orderbook) == 0:
             return orderbook
 
@@ -267,7 +278,12 @@ if __name__ == "__main__":
                        )
     if pmart.authenticate():
         print("success")
-
+    """
     token = pmart.instrument_symbol("NSE", "SBIN-EQ")
     resp = pmart.scriptinfo("NSE", token)
     print(resp)
+    resp = pmart.orders
+    print(resp)
+    """
+
+
