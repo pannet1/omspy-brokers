@@ -2,6 +2,7 @@ from typing import List, Dict
 from omspy.base import Broker, pre, post
 from SmartApi import SmartConnect
 import pyotp
+import traceback
 
 
 def trunc_name(word: str, leng: str) -> str:
@@ -83,9 +84,11 @@ class AngelOne(Broker):
                 }
             '''
             print(f"trying to place order for {kwargs}")
-            return self.obj.placeOrder(kwargs)
+            resp = self.obj.placeOrder(kwargs)
+            print(resp)
         except Exception as err:
             print(f"Order placement failed {err}")
+            traceback.format_exc(err)
             return {}
 
     def order_modify(self, kwargs: List[Dict]):
