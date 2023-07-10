@@ -85,11 +85,17 @@ class AngelOne(Broker):
             '''
             print(f"trying to place order for {kwargs}")
             resp = self.obj.placeOrder(kwargs)
-            print(resp)
+            if (
+                resp is not None
+                and isinstance(resp, str)
+            ):
+                return resp
+            else:
+                print("order no is empty")
+                return ""
         except Exception as err:
-            print(f"Order placement failed {err}")
-            traceback.format_exc(err)
-            return {}
+            print("Order placement failed: {}".format(err))
+            return ""
 
     def order_modify(self, kwargs: List[Dict]):
         try:
