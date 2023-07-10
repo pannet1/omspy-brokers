@@ -9,8 +9,9 @@ class Sasonline(Broker):
     """
     Automated Trading class
     """
-
-    def __init__(self, user_id, passwd, totp, lst_exch=['NFO', 'NSE']):
+    def __init__(self, user_id, passwd, totp,
+        lst_exch=['NSE', 'BSE', 'CDS', 'MCX', 'NFO']
+                 ):
         self.user_id = user_id
         self.passwd = passwd
         self.totp = totp
