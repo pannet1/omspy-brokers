@@ -52,15 +52,15 @@ class Profitmart(Broker):
             imei=self._imei,
         )
 
-    def authenticate(self) ->bool:
+    def authenticate(self) -> bool:
         """
         Authenticate the user
         """
-        resp =  self.login()
+        resp = self.login()
         if resp is None:
             print("no response")
             return False
-        elif(
+        elif (
             isinstance(resp, dict)
             and resp.get('susertoken', False)
         ):
@@ -122,7 +122,12 @@ class Profitmart(Broker):
     @post
     def positions(self) -> List[Dict]:
         positionbook = self._broker.get_positions()
-        if len(positionbook) == 0:
+        if positionbook is None:
+            return []
+        if (
+            isinstance(positionbook, list)
+            and len(positionbook) == 0
+        ):
             return positionbook
 
         position_list = []
@@ -292,5 +297,3 @@ if __name__ == "__main__":
     resp = pmart.orders
     print(resp)
     """
-
-
