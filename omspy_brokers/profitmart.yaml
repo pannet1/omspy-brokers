@@ -33,7 +33,6 @@ orders:
   exch: exchange
   exchordid: exchange_order_id
   dscqty: disclosed_quantity
-  ordenttm: exchange_timestamp
   norentm: broker_timestamp
 trades:
   norenordno: order_id
