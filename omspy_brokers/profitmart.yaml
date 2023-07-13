@@ -33,7 +33,7 @@ orders:
   exch: exchange
   exchordid: exchange_order_id
   dscqty: disclosed_quantity
-  ordenttm: exchange_timestamp
+  exch_tm: exchange_timestamp
   norentm: broker_timestamp
 trades:
   norenordno: order_id
@@ -41,5 +41,7 @@ trades:
   fltm: filled_timestamp
   flqty: filled_quantity
   exchordid: exchange_order_id
+  exch_tm: exchange_timestamp
+  norentm: broker_timestamp
   flprc: price
 
