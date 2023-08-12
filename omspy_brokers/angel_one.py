@@ -162,7 +162,13 @@ class AngelOne(Broker):
 
 if __name__ == '__main__':
     import yaml
+    import time
 
     with open("../../../angel.yaml", 'r') as f:
         ao = AngelOne(**yaml.safe_load(f))
-        auth = ao.authenticate()
+        ao.authenticate()
+    print(time.sleep(5))
+    new_ao = AngelOne(ao._user_id, ao._api_key, ao._totp, ao._password,
+                      ao.access_token, ao.refresh_token, ao.feed_token)
+    if new_ao.authenticate():
+        print("success")
