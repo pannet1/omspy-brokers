@@ -16,52 +16,50 @@ class AngelOne(Broker):
     Automated Trading class
     """
 
-    def __init__(self, user_id: str, api_key: str, totp: str, password: str):
+    def __init__(self, user_id: str, api_key: str, totp: str, password: str, access_token: str = None, refresh_token=None, feed_token=None):
         self._api_key = api_key
         self._user_id = user_id
         self._totp = totp
         self._password = password
-        self._authenticated = False
-        try:
-            self.obj = SmartConnect(api_key=api_key)
-            otp = pyotp.TOTP(self._totp)
-            pin = otp.now()
-            pin = f"{int(pin):06d}"
-            self.sess = self.obj.generateSession(
-                self._user_id, self._password, pin)
-            print(f"sess {self.sess}")
-            super(AngelOne, self).__init__()
-        except Exception as err:
-            print(f'{err} while init')
+        self.access_token = access_token
+        self.refresh_token = refresh_token
+        self.feed_token = feed_token
+        self.obj = SmartConnect(api_key=api_key, access_token=access_token,
+                                refresh_token=refresh_token, feed_token=feed_token)
+        super(AngelOne, self).__init__()
 
     def authenticate(self) -> bool:
         """
         Authenticate the user
         """
         try:
-            if not self._authenticated and self.sess:
-                if self.sess.get('data', 0) == 0:
+            otp = pyotp.TOTP(self._totp)
+            pin = otp.now()
+            pin = f"{int(pin):06d}"
+            self.sess = self.obj.generateSession(
+                self._user_id, self._password, pin)
+            print(f"sess {self.sess}")
+            if self.sess:
+                data = self.sess.get('data', 0)
+                if data == 0:
                     print("data is not available")
-                    return self._authenticated
+                    return False
+                else:
+                    self.auth_token = data['jwtToken'].split(' ')[1],
+                    self.refresh_token = data['refreshToken']
+                    self.feed_token = data['feedToken']
+                    p = self.obj.getProfile(self.refresh_token)
+                    if p['message'] == 'SUCCESS':
+                        print(f"{p}rofile")
+                        client_name = p['data']['name'].replace(' ', '')
+                        int_name_len = len(client_name)
+                        if int_name_len >= 8:
+                            self.client_name = client_name[:8] + \
+                                client_name[-3:]
+                        else:
+                            self.client_name = client_name[:int_name_len]
+            return True
 
-                data = self.sess['data']
-                if data.get('refreshToken', 0) == 0:
-                    print("refreshToken is not available")
-                    return self._authenticated
-                self.refresh_token = self.sess['data']['refreshToken']
-
-                p = self.obj.getProfile(self.refresh_token)
-                if p['message'] == 'SUCCESS':
-                    print(f"{p}rofile")
-                    client_name = p['data']['name'].replace(' ', '')
-                    int_name_len = len(client_name)
-                    if int_name_len >= 8:
-                        self.client_name = client_name[:8] + client_name[-3:]
-                    else:
-                        self.client_name = client_name[:int_name_len]
-                    self._authenticated = True
-
-            return self._authenticated
         except Exception as err:
             print(f'{err} while authenticating')
 
@@ -160,3 +158,11 @@ class AngelOne(Broker):
                 return resp
         except Exception as err:
             return {self._user_id: f'{err}'}
+
+
+if __name__ == '__main__':
+    import yaml
+
+    with open("../../../angel.yaml", 'r') as f:
+        ao = AngelOne(**yaml.safe_load(f))
+        auth = ao.authenticate()
