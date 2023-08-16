@@ -59,9 +59,9 @@ class AngelOne(Broker):
                         else:
                             self.client_name = client_name[:int_name_len]
             return True
-
         except Exception as err:
             print(f'{err} while authenticating')
+            return False
 
     @pre
     def order_place(self, **kwargs: List[Dict]):
