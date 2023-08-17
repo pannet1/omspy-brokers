@@ -2,7 +2,6 @@ from typing import List, Dict
 from omspy.base import Broker, pre, post
 from SmartApi import SmartConnect
 import pyotp
-import traceback
 
 
 def trunc_name(word: str, leng: str) -> str:
@@ -38,30 +37,36 @@ class AngelOne(Broker):
             pin = f"{int(pin):06d}"
             self.sess = self.obj.generateSession(
                 self._user_id, self._password, pin)
-            print(f"sess {self.sess}")
-            if self.sess:
-                data = self.sess.get('data', 0)
-                if data == 0:
-                    print("data is not available")
-                    return False
+            print(f"SESS: {self.sess}")
+            if (
+                self.sess is not None
+                and self.sess.get('data', False)
+                and isinstance(self.sess.get('data'), dict)
+            ):
+                data = self.sess['data']
+                jwt = data['jwtToken']
+                self.auth_token = jwt.split(' ')[1],
+                self.refresh_token = data['refreshToken']
+                self.feed_token = data['feedToken']
+                p = self.obj.getProfile(self.refresh_token)
+                if p is not None and isinstance(p, dict):
+                    print(f"PROFILE: {p}")
+                    client_name = p['data']['name'].replace(' ', '')
+                    int_name_len = len(client_name)
+                    if int_name_len >= 8:
+                        self.client_name = client_name[:8] + \
+                            client_name[-3:]
+                    else:
+                        self.client_name = client_name[:int_name_len]
                 else:
-                    self.auth_token = data['jwtToken'].split(' ')[1],
-                    self.refresh_token = data['refreshToken']
-                    self.feed_token = data['feedToken']
-                    p = self.obj.getProfile(self.refresh_token)
-                    if p['message'] == 'SUCCESS':
-                        print(f"{p}rofile")
-                        client_name = p['data']['name'].replace(' ', '')
-                        int_name_len = len(client_name)
-                        if int_name_len >= 8:
-                            self.client_name = client_name[:8] + \
-                                client_name[-3:]
-                        else:
-                            self.client_name = client_name[:int_name_len]
-            return True
+                    return False
+            else:
+                return False
         except Exception as err:
-            print(f'{err} while authenticating')
+            print(f'str{err} while authenticating')
             return False
+        else:
+            return True
 
     @pre
     def order_place(self, **kwargs: List[Dict]):
