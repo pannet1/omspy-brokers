@@ -41,13 +41,6 @@ class AngelOne(Broker):
             self.auth_token = jwt.split(' ')[1],
             self.refresh_token = data['refreshToken']
             self.feed_token = data['feedToken']
-        super(AngelOne, self).__init__()
-
-    def authenticate(self) -> bool:
-        """
-        Authenticate the user
-        """
-        try:
             p = self.obj.getProfile(self.refresh_token)
             if p is not None and isinstance(p, dict):
                 print(f"PROFILE: {p}")
@@ -58,13 +51,16 @@ class AngelOne(Broker):
                         client_name[-3:]
                 else:
                     self.client_name = client_name[:int_name_len]
-            else:
-                return False
-        except Exception as err:
-            print(f'str{err} while authenticating')
-            return False
-        else:
+        super(AngelOne, self).__init__()
+
+    def authenticate(self) -> bool:
+        """
+        Authenticate the user
+        """
+        if len(self.client_name) > 0:
             return True
+        else:
+            return False
 
     @pre
     def order_place(self, **kwargs: List[Dict]):
