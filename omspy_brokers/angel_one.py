@@ -25,6 +25,22 @@ class AngelOne(Broker):
         self.feed_token = feed_token
         self.obj = SmartConnect(api_key=api_key, access_token=access_token,
                                 refresh_token=refresh_token, feed_token=feed_token)
+        otp = pyotp.TOTP(self._totp)
+        pin = otp.now()
+        pin = f"{int(pin):06d}"
+        self.sess = self.obj.generateSession(
+            self._user_id, self._password, pin)
+        print(f"SESS: {self.sess}")
+        if (
+            self.sess is not None
+            and self.sess.get('data', False)
+            and isinstance(self.sess.get('data'), dict)
+        ):
+            data = self.sess['data']
+            jwt = data['jwtToken']
+            self.auth_token = jwt.split(' ')[1],
+            self.refresh_token = data['refreshToken']
+            self.feed_token = data['feedToken']
         super(AngelOne, self).__init__()
 
     def authenticate(self) -> bool:
@@ -32,34 +48,16 @@ class AngelOne(Broker):
         Authenticate the user
         """
         try:
-            otp = pyotp.TOTP(self._totp)
-            pin = otp.now()
-            pin = f"{int(pin):06d}"
-            self.sess = self.obj.generateSession(
-                self._user_id, self._password, pin)
-            print(f"SESS: {self.sess}")
-            if (
-                self.sess is not None
-                and self.sess.get('data', False)
-                and isinstance(self.sess.get('data'), dict)
-            ):
-                data = self.sess['data']
-                jwt = data['jwtToken']
-                self.auth_token = jwt.split(' ')[1],
-                self.refresh_token = data['refreshToken']
-                self.feed_token = data['feedToken']
-                p = self.obj.getProfile(self.refresh_token)
-                if p is not None and isinstance(p, dict):
-                    print(f"PROFILE: {p}")
-                    client_name = p['data']['name'].replace(' ', '')
-                    int_name_len = len(client_name)
-                    if int_name_len >= 8:
-                        self.client_name = client_name[:8] + \
-                            client_name[-3:]
-                    else:
-                        self.client_name = client_name[:int_name_len]
+            p = self.obj.getProfile(self.refresh_token)
+            if p is not None and isinstance(p, dict):
+                print(f"PROFILE: {p}")
+                client_name = p['data']['name'].replace(' ', '')
+                int_name_len = len(client_name)
+                if int_name_len >= 8:
+                    self.client_name = client_name[:8] + \
+                        client_name[-3:]
                 else:
-                    return False
+                    self.client_name = client_name[:int_name_len]
             else:
                 return False
         except Exception as err:
