@@ -5,6 +5,7 @@ import pyotp
 import traceback
 import time
 import requests
+import os
 
 
 class Bypass(Broker):
@@ -151,5 +152,12 @@ class Bypass(Broker):
     def margins(self):
         return self.kite.margins()
 
+    @property
+    def remove_token(self):
+        os.remove(self.tokpath)
+
     def ltp(self, exchsym):
         return self.kite.ltp(exchsym)
+
+    def history(self, kwargs):
+        return self.kite.historical_data(**kwargs)
