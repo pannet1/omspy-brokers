@@ -9,6 +9,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 import time
+import requests
 
 
 class Bypass(Broker):
@@ -17,33 +18,58 @@ class Bypass(Broker):
     """
 
     def __init__(self, userid, password, totp, tokpath='enctoken.txt', enctoken=None):
-        try:
-            self.userid = userid
-            self.password = password
-            self.totp = totp
-            self.tokpath = tokpath
-            self.enctoken = enctoken
-            self.kite = KiteExt(userid=userid)
-            super(Bypass, self).__init__()
-        except Exception as err:
-            print(f'{err} while init')
+
+        self.userid = userid
+        self.password = password
+        self.totp = totp
+        self.tokpath = tokpath
+        self.enctoken = enctoken
+        self.kite = KiteExt(userid=userid)
+        super(Bypass, self).__init__()
 
     def authenticate(self) -> bool:
         """
         Authenticate the user
         """
         try:
-            if self.enctoken is None:
-                print(self.enctoken)
-                self._login()
+            # self._login()
+            if self.get_enctoken():
                 self.enctoken = open(self.tokpath, 'r').read().rstrip()
-
-            self.kite.set_headers(self.enctoken, self.userid)
+                self.kite.set_headers(self.enctoken, self.userid)
         except Exception as err:
             print(f'{err} while authentiating')
-        return True
+            return False
+        else:
+            return True
 
-    def _login(self) -> None:
+    def get_enctoken(self) -> bool:
+        try:
+            session = requests.Session()
+            data = {'user_id': self.userid, 'password': self.password}
+            response = session.post(
+                'https://kite.zerodha.com/api/login',
+                data=data)
+            otp = pyotp.TOTP(self.totp).now()
+            twofa = f"{int(otp):06d}"
+            response = session.post(
+                'https://kite.zerodha.com/api/twofa',
+                data={'request_id': response.json()['data']['request_id'],
+                      'twofa_value': twofa,
+                      'user_id': response.json()['data']['user_id']}
+            )
+            enctoken = response.cookies.get('enctoken', False)
+            if enctoken:
+                with open(self.tokpath, 'w+') as wr:
+                    wr.write(enctoken)
+            else:
+                raise Exception('Enter valid details !!!!')
+        except Exception as e:
+            print(e)
+            return False
+        else:
+            return True
+
+    def _login(self):
         try:
             # s = Service(ChromeDriverManager().install())
             options = Options()
@@ -52,7 +78,8 @@ class Bypass(Broker):
             options.add_argument("--no-sandbox")
             options.add_argument("--disable-dev-shm-usage")
 
-            driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+            driver = webdriver.Chrome(service=ChromeService(
+                ChromeDriverManager().install()), options=options)
             # driver = webdriver.Chrome(service=s, options=options)
             driver.get('https://kite.zerodha.com/')
             driver.implicitly_wait(5)
