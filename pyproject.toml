@@ -9,7 +9,7 @@ repository = "https://github.com/pannet1/omspy"
 
 
 [tool.poetry.dependencies]
-omspy = "^0.16.0"
+python = "^3.8.0"
 
 [build-system]
 requires = ["poetry-core"]
