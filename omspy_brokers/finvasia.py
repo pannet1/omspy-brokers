@@ -112,8 +112,9 @@ class Finvasia(Broker):
     @post
     def positions(self) -> List[Dict]:
         positionbook = self.finvasia.get_positions()
-        if len(positionbook) == 0:
-            return positionbook
+
+        if not positionbook or len(positionbook) == 0:
+            return [{}]
 
         position_list = []
         int_cols = [
