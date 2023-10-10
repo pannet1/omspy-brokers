@@ -27,16 +27,20 @@ class Bypass(Broker):
         """
         Authenticate the user
         """
-        try:
-            # self._login()
+        if not self.enctoken:
             if self.get_enctoken():
                 self.enctoken = open(self.tokpath, 'r').read().rstrip()
+        if self.enctoken:
+            try:
+                # self._login()
                 self.kite.set_headers(self.enctoken, self.userid)
-        except Exception as err:
-            print(f'{err} while authentiating')
-            return False
-        else:
-            return True
+            except Exception as err:
+                print(f'{err} while authentiating')
+                self.remove_token()
+                return False
+            else:
+                return True
+        return False
 
     def get_enctoken(self) -> bool:
         try:
@@ -154,7 +158,10 @@ class Bypass(Broker):
 
     @property
     def remove_token(self):
-        os.remove(self.tokpath)
+        if os.path.exists(self.tokpath):
+            os.remove(self.tokpath)
+        else:
+            print(f"not found {self.tokpath}")
 
     def ltp(self, exchsym):
         return self.kite.ltp(exchsym)
