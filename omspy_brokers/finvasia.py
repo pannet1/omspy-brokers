@@ -219,6 +219,7 @@ class Finvasia(Broker):
         # we have only quantity in kwargs now
         order_args.update(kwargs)
         response = self.finvasia.place_order(**order_args)
+        print(f"omspy_brokers.order_place: {response}")
         if isinstance(response, dict) and response.get("norenordno") is not None:
             return response["norenordno"]
 
