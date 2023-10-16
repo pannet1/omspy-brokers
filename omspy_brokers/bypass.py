@@ -61,6 +61,7 @@ class Bypass(Broker):
             if enctoken:
                 with open(self.tokpath, 'w+') as wr:
                     wr.write(enctoken)
+                self.enctoken = enctoken
             else:
                 raise Exception('Enter valid details !!!!')
         except Exception as e:
