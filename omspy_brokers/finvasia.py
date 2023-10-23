@@ -179,7 +179,7 @@ class Finvasia(Broker):
         )
         order_types["SL-M"] = "SL-MKT"
         order_types["SL-L"] = "SL-LMT"
-        return order_types.get(order_type.upper(), "MKT")
+        return order_types.get(order_type.upper(), order_type)
 
     @pre
     def order_place(self, **kwargs) -> Union[str, None]:
