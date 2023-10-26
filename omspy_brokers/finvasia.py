@@ -19,7 +19,7 @@ class Finvasia(Broker):
         vendor_code: str,
         app_key: str,
         imei: str,
-        broker: str = ""
+        broker: str = "",
     ):
         self._user_id = user_id
         self._password = password
@@ -30,7 +30,7 @@ class Finvasia(Broker):
         if broker == "profitmart":
             self.finvasia = ShoonyaApiPy(
                 host="https://profitmax.profitmart.in/NorenWClientTP",
-                websocket='wss://profitmax.profitmart.in/NorenWSTP/',
+                websocket="wss://profitmax.profitmart.in/NorenWSTP/",
             )
         else:
             self.finvasia = ShoonyaApiPy()
@@ -41,10 +41,8 @@ class Finvasia(Broker):
         return {"symbol", "exchange"}
 
     def login(self) -> Union[Dict, None]:
-
         if len(self._pin) > 15:
-            twoFA = self._pin if len(
-                self._pin) == 4 else pyotp.TOTP(self._pin).now()
+            twoFA = self._pin if len(self._pin) == 4 else pyotp.TOTP(self._pin).now()
         else:
             twoFA = self._pin
         return self.finvasia.login(
@@ -194,8 +192,7 @@ class Finvasia(Broker):
         tradingsymbol = kwargs.pop("symbol")
         if tradingsymbol and exchange:
             tradingsymbol = tradingsymbol.upper()
-            tradingsymbol = self._convert_symbol(
-                tradingsymbol, exchange=exchange)
+            tradingsymbol = self._convert_symbol(tradingsymbol, exchange=exchange)
         price = kwargs.pop("price", None)
         if price and price < 0:
             price = 0.05
@@ -214,7 +211,7 @@ class Finvasia(Broker):
             price=price,
             trigger_price=trigger_price,
             retention=retention,
-            remarks=remarks
+            remarks=remarks,
         )
         # we have only quantity in kwargs now
         order_args.update(kwargs)
@@ -254,7 +251,8 @@ class Finvasia(Broker):
 
     def instrument_symbol(self, exch: str, txt: str) -> int:
         res = self.finvasia.searchscrip(exchange=exch, searchtext=txt)
-        return res['values'][0].get('token', 0)
+        if res:
+            return res["values"][0].get("token", 0)
 
     def historical(self, exch: str, tkn: str, fm: str, to: str):
         return self.finvasia.get_time_price_series(exch, tkn, fm, to)
