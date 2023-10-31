@@ -249,13 +249,19 @@ class Finvasia(Broker):
         order_args.update(kwargs)
         return self.finvasia.modify_order(**order_args)
 
-    def instrument_symbol(self, exch: str, txt: str) -> int:
+    def instrument_symbol(self, exch: str, txt: str):
         res = self.finvasia.searchscrip(exchange=exch, searchtext=txt)
         if res:
             return res["values"][0].get("token", 0)
 
-    def historical(self, exch: str, tkn: str, fm: str, to: str):
-        return self.finvasia.get_time_price_series(exch, tkn, fm, to)
+    def historical(self, exch: str, tkn: str, fm: str, to: str, tf: int = 1):
+        """
+        ret = api.get_time_price_series(exchange='NSE', token='22',
+        starttime=obj_datetime.timestamp(), interval=5)
+        interval: acceptable integer values in minutes are
+        “1”, ”3”, “5”, “10”, “15”, “30”, “60”, “120”, “240”
+        """
+        return self.finvasia.get_time_price_series(exch, tkn, fm, to, tf)
 
     def scriptinfo(self, exch: str, tkn: str):
         return self.finvasia.get_quotes(exch, tkn)
