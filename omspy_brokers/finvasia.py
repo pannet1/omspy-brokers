@@ -186,7 +186,7 @@ class Finvasia(Broker):
         exchange = kwargs.pop("exchange")
         # kwargs['quantity']
         discloseqty = kwargs.pop("disclosed_quantity", 0)
-        price_type = kwargs.pop("order_type")
+        price_type = kwargs.pop("order_type", "MARKET")
         if price_type:
             price_type = self.get_order_type(price_type)
         tradingsymbol = kwargs.pop("symbol")
