@@ -42,7 +42,8 @@ class Finvasia(Broker):
 
     def login(self) -> Union[Dict, None]:
         if len(self._pin) > 15:
-            twoFA = self._pin if len(self._pin) == 4 else pyotp.TOTP(self._pin).now()
+            twoFA = self._pin if len(
+                self._pin) == 4 else pyotp.TOTP(self._pin).now()
         else:
             twoFA = self._pin
         return self.finvasia.login(
@@ -75,15 +76,12 @@ class Finvasia(Broker):
     @property
     @post
     def orders(self) -> List[Dict]:
-        orderbook = self.finvasia.get_order_book()
-        if len(orderbook) == 0:
-            return orderbook
-
         order_list = []
-        float_cols = ["avgprc", "prc", "rprc", "trgprc"]
-        int_cols = ["fillshares", "qty"]
-        for order in orderbook:
-            try:
+        orderbook = self.finvasia.get_order_book()
+        if orderbook:
+            float_cols = ["avgprc", "prc", "rprc", "trgprc"]
+            int_cols = ["fillshares", "qty"]
+            for order in orderbook:
                 for int_col in int_cols:
                     order[int_col] = int(order.get(int_col, 0))
                 for float_col in float_cols:
@@ -101,9 +99,7 @@ class Finvasia(Broker):
                         ts2, fmt="HH:mm:ss DD-MM-YYYY", tz="Asia/Kolkata"
                     )
                 )
-            except Exception as e:
-                logging.error(e)
-            order_list.append(order)
+                order_list.append(order)
         return order_list
 
     @property
@@ -192,7 +188,8 @@ class Finvasia(Broker):
         tradingsymbol = kwargs.pop("symbol")
         if tradingsymbol and exchange:
             tradingsymbol = tradingsymbol.upper()
-            tradingsymbol = self._convert_symbol(tradingsymbol, exchange=exchange)
+            tradingsymbol = self._convert_symbol(
+                tradingsymbol, exchange=exchange)
         price = kwargs.pop("price", None)
         if price and price < 0:
             price = 0.05
