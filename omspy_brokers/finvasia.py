@@ -86,14 +86,17 @@ class Finvasia(Broker):
                     order[int_col] = int(order.get(int_col, 0))
                 for float_col in float_cols:
                     order[float_col] = float(order.get(float_col, 0))
-                ts = order.get("exch_tm", pendulum.now().timestamp())
+                # pendulum current datetime
+                now = pendulum.now(
+                    tz="Asia/Kolkata").format("DD-MM-YYYY HH:mm:ss")
+                ts = order.get("exch_tm", now)
                 # Timestamp converted to str to facilitate loading into pandas dataframe
                 order["exchange_timestamp"] = str(
                     pendulum.from_format(
                         ts, fmt="DD-MM-YYYY HH:mm:ss", tz="Asia/Kolkata"
                     )
                 )
-                ts2 = order["norentm"]
+                ts2 = order.get("norentm", now)
                 order["broker_timestamp"] = str(
                     pendulum.from_format(
                         ts2, fmt="HH:mm:ss DD-MM-YYYY", tz="Asia/Kolkata"
