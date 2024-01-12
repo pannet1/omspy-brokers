@@ -21,19 +21,17 @@ positions:
   daybuyamt: day_buy_value
   daysellamt: day_sell_value
 orders:
-  tsym: symbol
-  qty: quantity
-  trantype: side
-  ret: validity
-  prc: price
-  trgprc: trigger_price
+  Trsym: symbol
+  quantity: quantity
+  Trantype: side
+  Validity: validity
+  Prc: price
+  Trgprc: trigger_price
   avgprc: average_price
-  fillshares: filled_quantity
-  norenordno: order_id
-  exch: exchange
-  exchordid: exchange_order_id
-  dscqty: disclosed_quantity
-  norentm: broker_timestamp
+  filled_quantity: filled_quantity
+  Exchange: exchange
+  ExchOrdID: exchange_order_id
+  OrderedTime: broker_timestamp
 trades:
   norenordno: order_id
   exch: exchange

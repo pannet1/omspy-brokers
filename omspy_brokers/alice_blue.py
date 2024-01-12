@@ -1,6 +1,5 @@
 from pya3 import *
 from omspy.base import Broker, pre, post
-from typing import List, Dict
 
 
 class AliceBlue(Broker):
