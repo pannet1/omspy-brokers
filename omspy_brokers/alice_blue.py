@@ -85,14 +85,34 @@ class AliceBlue(Broker):
     @property
     @post
     def orders(self):
-        return self.broker.get_order_history("")
+        orders = self.broker.get_order_history("")
+        lst = [
+            "symbol",
+            "quantity",
+            "side",
+            "validity",
+            "price",
+            "trigger_price",
+            "average_price",
+            "filled_quantity",
+            "exchange",
+            "exchange_order_id",
+            "broker_timestamp",
+        ]
+        if orders and any(orders):
+            """
+            filter order dict from orders list of dictionaries
+            with lst values as keys
+            """
+            orders = [{k: v} for k, v in orders.items() if k in lst]
+        return orders
 
-    @property
-    @post
+    @ property
+    @ post
     def positions(self):
         return self.broker.get_daywise_positions()
 
-    @property
-    @post
+    @ property
+    @ post
     def trades(self):
         return self.broker.get_trade_book()
