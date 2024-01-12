@@ -86,7 +86,7 @@ class AliceBlue(Broker):
     @post
     def orders(self):
         orders = self.broker.get_order_history("")
-        lst = [
+        keys = [
             "symbol",
             "quantity",
             "side",
@@ -104,8 +104,8 @@ class AliceBlue(Broker):
             filter order dict from orders list of dictionaries
             with lst values as keys
             """
-            orders = [{k: order[k] for k in lst if k in order}
-                      for order in orders]
+            orders = [{key: dct[key]
+                       for key in keys} for dct in orders]
         return orders
 
     @ property
