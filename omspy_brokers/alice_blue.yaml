@@ -10,7 +10,7 @@ orders:
   avgprc: average_price
   filled_quantity: filled_quantity
   Exchange: exchange
-  ExchOrdID: exchange_order_id
+  Nstordno: order_id
   OrderedTime: broker_timestamp
 positions:
   Tsym: symbol
