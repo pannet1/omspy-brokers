@@ -2,13 +2,13 @@ order_place:
   remarks: tag
 orders:
   Trsym: symbol
-  quantity: quantity
   Trantype: side
   Validity: validity
   Prc: price
   Trgprc: trigger_price
   avgprc: average_price
-  filled_quantity: filled_quantity
+  Fillshares: filled_quantity
+  Qty: quantity
   Exchange: exchange
   Nstordno: order_id
   OrderedTime: broker_timestamp
