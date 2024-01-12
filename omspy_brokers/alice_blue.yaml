@@ -25,7 +25,7 @@ trades:
   Exchange: exchange
   Filltime: filled_timestamp
   Filledqty: filled_quantity
-  ExchOrdID: exchange_order_id
+  ExchordID: exchange_order_id
   AvgPrice: price
-  Transtype: side
+  Trantype: side
 
