@@ -6,7 +6,7 @@ orders:
   Validity: validity
   Prc: price
   Trgprc: trigger_price
-  avgprc: average_price
+  Avgprc: average_price
   Fillshares: filled_quantity
   Qty: quantity
   Exchange: exchange
