@@ -12,3 +12,11 @@ orders:
   Exchange: exchange
   ExchOrdID: exchange_order_id
   OrderedTime: broker_timestamp
+positions:
+  Tsym: symbol
+  Netqty: quantity
+  Pcode: product
+  LTP: last_price
+  Exchange: exchange
+  Fillbuyamt: day_buy_value
+  Fillsellamt: day_sell_value
