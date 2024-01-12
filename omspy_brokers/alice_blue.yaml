@@ -1,9 +1,14 @@
+order_place:
+  remarks: tag
 orders:
-  Sym: symbol
-  Avgprc: average_price
-  Qty: quantity
-  Fillshares: filled_quantity
-  Nstordno: order_id
-  Exseg: segment
-  Status: status
-  Cancelqty: cancelled_quantity
+  Trsym: symbol
+  quantity: quantity
+  Trantype: side
+  Validity: validity
+  Prc: price
+  Trgprc: trigger_price
+  avgprc: average_price
+  filled_quantity: filled_quantity
+  Exchange: exchange
+  ExchOrdID: exchange_order_id
+  OrderedTime: broker_timestamp
