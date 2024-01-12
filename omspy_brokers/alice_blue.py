@@ -99,14 +99,24 @@ class AliceBlue(Broker):
             "exchange_order_id",
             "broker_timestamp",
         ]
+        new_lst = []
         if orders and any(orders):
             """
             filter order dict from orders list of dictionaries
             with lst values as keys
             """
+            """
             orders = [{key: dct[key]
                        for key in keys} for dct in orders]
-        return orders
+            """
+            for dct in orders:
+                new_dct = {}
+                for k in dct:
+                    if dct.get(k, None) and k in keys:
+                        new_dct[k] = dct[k]
+                new_lst.append(new_dct)
+
+            return new_lst
 
     @ property
     @ post
