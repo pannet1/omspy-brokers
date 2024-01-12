@@ -85,38 +85,7 @@ class AliceBlue(Broker):
     @property
     @post
     def orders(self):
-        orders = self.broker.get_order_history("")
-        keys = [
-            "symbol",
-            "quantity",
-            "side",
-            "validity",
-            "price",
-            "trigger_price",
-            "average_price",
-            "filled_quantity",
-            "exchange",
-            "exchange_order_id",
-            "broker_timestamp",
-        ]
-        new_lst = []
-        if orders and any(orders):
-            """
-            filter order dict from orders list of dictionaries
-            with lst values as keys
-            """
-            """
-            orders = [{key: dct[key]
-                       for key in keys} for dct in orders]
-            """
-            for dct in orders:
-                new_dct = {}
-                for key in keys:
-                    if dct.get(key, None):
-                        new_dct[key] = dct[key]
-                new_lst.append(new_dct)
-
-            return new_lst
+        return self.broker.get_order_history("")
 
     @ property
     @ post
