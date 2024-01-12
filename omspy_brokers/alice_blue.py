@@ -104,7 +104,8 @@ class AliceBlue(Broker):
             filter order dict from orders list of dictionaries
             with lst values as keys
             """
-            orders = [{k: v} for k, v in orders.items() if k in lst]
+            orders = [{k: order[k] for k in lst if k in order}
+                      for order in orders]
         return orders
 
     @ property
