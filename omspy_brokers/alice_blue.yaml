@@ -7,6 +7,7 @@ orders:
   Prc: price
   Trgprc: trigger_price
   Avgprc: average_price
+  Pcode: product
   Fillshares: filled_quantity
   Qty: quantity
   Exchange: exchange
