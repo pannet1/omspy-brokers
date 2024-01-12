@@ -20,3 +20,12 @@ positions:
   Exchange: exchange
   Fillbuyamt: day_buy_value
   Fillsellamt: day_sell_value
+trades:
+  Nstordno: order_id
+  Exchange: exchange
+  Filltime: filled_timestamp
+  Filledqty: filled_quantity
+  ExchOrdID: exchange_order_id
+  AvgPrice: price
+  Transtype: side
+
