@@ -111,9 +111,9 @@ class AliceBlue(Broker):
             """
             for dct in orders:
                 new_dct = {}
-                for k in dct:
-                    if dct.get(k, None) and k in keys:
-                        new_dct[k] = dct[k]
+                for key in keys:
+                    if dct.get(key, None):
+                        new_dct[key] = dct[key]
                 new_lst.append(new_dct)
 
             return new_lst
