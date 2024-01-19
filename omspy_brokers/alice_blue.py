@@ -21,6 +21,7 @@ class AliceBlue(Broker):
         if isinstance(session, dict):
             if session.get("sessionID", None):
                 self.token = session["sessionID"]
+                print(session.get("emsg", "no error message"))
                 return True
         return False
 
