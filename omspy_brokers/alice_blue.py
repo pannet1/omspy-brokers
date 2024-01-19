@@ -17,10 +17,11 @@ class AliceBlue(Broker):
         """
         Authenticate the user
         """
-        token = self.broker.get_session_id()
-        if token and len(token) > 0:
-            self.token = token
-            return True
+        session = self.broker.get_session_id()
+        if isinstance(session, dict):
+            if session.get("sessionID", None):
+                self.token = session["sessionID"]
+                return True
         return False
 
     def get_transaction_type(self, side):
