@@ -27,8 +27,7 @@ class AliceBlue(Broker):
         return False
 
     def get_transaction_type(self, side):
-        lst_buy = ["BUY", "Buy", "buy", "B"]
-        if side in lst_buy:
+        if side[0].upper() == "B":
             return TransactionType.Buy
         return TransactionType.Sell
 
@@ -39,11 +38,10 @@ class AliceBlue(Broker):
             return OrderType.StopLossLimit
         elif order_type == "SL-M":
             return OrderType.StopLossMarket
-
         return OrderType.Market
 
     def get_product_type(self, product):
-        if product == "NRML":
+        if product.upper() == "NRML":
             return ProductType.Normal
         return ProductType.Intraday
 
@@ -68,11 +66,11 @@ class AliceBlue(Broker):
         return self.broker.place_order(**args)
 
     def order_modify(self, **kwargs):
-        symbol = kwargs["symbol"].split(":")
+        # symbol = kwargs["symbol"].split(":")
         args = dict(
             transaction_type=self.get_transaction_type(kwargs["side"]),
-            instrument=self.broker.get_instrument_by_symbol(
-                symbol[0], symbol[1]),
+            # instrument=self.broker.get_instrument_by_symbol(
+            #   symbol[0], symbol[1]),
             order_id=kwargs["order_id"],
             quantity=kwargs["quantity"],
             order_type=self.get_order_type(kwargs["order_type"]),
