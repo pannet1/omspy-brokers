@@ -249,6 +249,10 @@ class Finvasia(Broker):
         order_args.update(kwargs)
         return self.finvasia.modify_order(**order_args)
 
+    @property
+    def margins(self):
+        return self.finvasia.get_limits()
+
     def instrument_symbol(self, exch: str, txt: str):
         res = self.finvasia.searchscrip(exchange=exch, searchtext=txt)
         if res:
