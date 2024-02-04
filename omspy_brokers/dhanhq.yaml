@@ -1,0 +1,12 @@
+order_place:
+  security_id: symbol
+  transaction_type: side
+  quantity: quantity
+  disclosed_quantity: disclosed_quantity
+  order_type: order_type
+  product_type: product
+  price: price
+  trigger_price: trigger_price
+  validity: validity
+
+
