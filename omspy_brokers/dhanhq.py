@@ -69,7 +69,9 @@ class Dhanhq(Broker):
                 0] == "B" else self.broker.SELL,
             quantity=kwargs["quantity"],
             order_type=self.get_order_type(kwargs["order_type"]),
-            product_type=self.get_product_type(kwargs["product"])
+            product_type=self.get_product_type(kwargs["product"]),
+            price=kwargs["price"],
+            trigger_price=kwargs["trigger_price"]
         )
         self.broker.place_order(**args)
 
@@ -93,7 +95,7 @@ class Dhanhq(Broker):
     @ property
     @ post
     def orders(self):
-        return [{}]
+        return self.broker.get_order_list()
 
     @ property
     @ post
@@ -103,8 +105,8 @@ class Dhanhq(Broker):
     @ property
     @ post
     def positions(self):
-        return [{}]
+        return self.broker.get_positions()
 
     @property
     def margins(self):
-        return [{}]
+        return self.broker.get_fund_limits()
