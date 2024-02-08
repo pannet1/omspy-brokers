@@ -73,7 +73,7 @@ class Dhanhq(Broker):
             price=kwargs["price"],
             trigger_price=kwargs["trigger_price"]
         )
-        self.broker.place_order(**args)
+        return self.broker.place_order(**args)
 
     @ pre
     def order_modify(self, **kwargs: List[Dict]):
