@@ -60,7 +60,7 @@ class Dhanhq(Broker):
         """
         Place an order
         """
-        symbol = kwargs.pop("symbol")
+        symbol = kwargs["symbol"].split(":")
 
         args = dict(
             exchange_segment=self.get_exchange_segment(symbol[0]),
