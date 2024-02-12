@@ -70,10 +70,14 @@ class Dhanhq(Broker):
             quantity=kwargs["quantity"],
             order_type=self.get_order_type(kwargs["order_type"]),
             product_type=self.get_product_type(kwargs["product"]),
-            price=kwargs["price"],
-            trigger_price=kwargs["trigger_price"]
+            price=kwargs["price"]
         )
-        return self.broker.place_order(**args)
+        try:
+            args["trigger_price"] = kwargs["trigger_price"]
+        except Exception as e:
+            print(e)
+        finally:
+            return self.broker.place_order(**args)
 
     @ pre
     def order_modify(self, **kwargs: List[Dict]):
