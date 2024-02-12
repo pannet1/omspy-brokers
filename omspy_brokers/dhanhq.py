@@ -77,6 +77,7 @@ class Dhanhq(Broker):
         except Exception as e:
             print(e)
         finally:
+            print(args)
             return self.broker.place_order(**args)
 
     @ pre
