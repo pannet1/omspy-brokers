@@ -37,8 +37,7 @@ class AngelOne(Broker):
             and isinstance(self.sess.get('data'), dict)
         ):
             data = self.sess['data']
-            jwt = data['jwtToken']
-            self.auth_token = jwt.split(' ')[1],
+            self.auth_token = data['jwtToken'].split(' ')[1]
             self.refresh_token = data['refreshToken']
             self.feed_token = data['feedToken']
             p = self.obj.getProfile(self.refresh_token)
