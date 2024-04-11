@@ -9,7 +9,6 @@ class Dhanhq(Broker):
     """
 
     def __init__(self, userid, access_token):
-
         self.userid = userid
         self.broker = dhanhq(client_id=userid, access_token=access_token)
         super(Dhanhq, self).__init__()
@@ -19,9 +18,11 @@ class Dhanhq(Broker):
         Authenticate the user
         """
         dct_margin = self.broker.get_fund_limits()
-        if dct_margin and \
-                isinstance(dct_margin, dict) and \
-                dct_margin["status"] == "success":
+        if (
+            dct_margin
+            and isinstance(dct_margin, dict)
+            and dct_margin["status"] == "success"
+        ):
             return True
         return False
 
@@ -35,7 +36,7 @@ class Dhanhq(Broker):
             NSE_FNO=self.broker.NSE_FNO,
             BSE_FNO=self.broker.BSE_FNO,
             NFO=self.broker.NSE_FNO,
-            BFO=self.broker.BSE_FNO
+            BFO=self.broker.BSE_FNO,
         )
         return dct.get(exchange, self.broker.NSE_FNO)
 
@@ -44,7 +45,7 @@ class Dhanhq(Broker):
             LMT=self.broker.LIMIT,
             MKT=self.broker.MARKET,
             SLM=self.broker.SLM,
-            SL=self.broker.SL
+            SL=self.broker.SL,
         )
         return dct.get(order_type, self.broker.MARKET)
 
@@ -55,7 +56,7 @@ class Dhanhq(Broker):
         )
         return dct.get(product_type, self.broker.MARGIN)
 
-    @ pre
+    @pre
     def order_place(self, **kwargs: List[Dict]):
         """
         Place an order
@@ -65,12 +66,13 @@ class Dhanhq(Broker):
         args = dict(
             exchange_segment=self.get_exchange_segment(symbol[0]),
             security_id=str(symbol[1]),
-            transaction_type=self.broker.BUY if kwargs["side"].upper()[
-                0] == "B" else self.broker.SELL,
+            transaction_type=self.broker.BUY
+            if kwargs["side"].upper()[0] == "B"
+            else self.broker.SELL,
             quantity=kwargs["quantity"],
             order_type=self.get_order_type(kwargs["order_type"]),
             product_type=self.get_product_type(kwargs["product"]),
-            price=kwargs["price"]
+            price=kwargs["price"],
         )
         try:
             args["trigger_price"] = kwargs["trigger_price"]
@@ -80,7 +82,7 @@ class Dhanhq(Broker):
             print(args)
             return self.broker.place_order(**args)
 
-    @ pre
+    @pre
     def order_modify(self, **kwargs: List[Dict]):
         """
         Modify an existing order
@@ -90,28 +92,42 @@ class Dhanhq(Broker):
         """
         pass
 
-    @ pre
+    @pre
     def order_cancel(self, order_id: str, variety):
         """
         Cancel an existing order
         """
         pass
 
-    @ property
-    @ post
+    @property
+    @post
     def orders(self):
         return self.broker.get_order_list()
 
-    @ property
-    @ post
+    @property
+    @post
     def trades(self) -> List[Dict]:
         return [{}]
 
-    @ property
-    @ post
+    @property
+    @post
     def positions(self):
         return self.broker.get_positions()
 
     @property
     def margins(self):
         return self.broker.get_fund_limits()
+
+    def intraday(self, **kwargs):
+        """
+        input:
+            symbol: exchange:security id str
+            type: instrument type str
+        """
+        symbol = kwargs["symbol"].split(":")
+        resp = self.intraday_minute_data(
+            exchange_segment=self.get_exchange_segment(symbol[0]),
+            security_id=str(symbol[1]),
+            instrument_type=kwargs["type"],
+        )
+        return resp
