@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "omspy-brokers"
-version = "0.2.2"
+version = "0.2.3"
 description = ""
 authors = ["darkseid <uberdeveloper001@gmail.com>"]
 readme = "README.md"
