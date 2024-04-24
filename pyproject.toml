@@ -1,16 +1,9 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[omspy-brokers]
 name = "omspy-brokers"
 version = "0.2.3"
 description = ""
 authors = ["darkseid <uberdeveloper001@gmail.com>"]
-readme = "README.md"
-packages = [{include = "omspy_brokers"}]
-repository = "https://github.com/pannet1/omspy"
-
-
-[tool.poetry.dependencies]
-python = "^3.8.0"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
