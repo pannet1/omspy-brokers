@@ -42,8 +42,7 @@ class Finvasia(Broker):
 
     def login(self) -> Union[Dict, None]:
         if len(self._pin) > 15:
-            twoFA = self._pin if len(
-                self._pin) == 4 else pyotp.TOTP(self._pin).now()
+            twoFA = self._pin if len(self._pin) == 4 else pyotp.TOTP(self._pin).now()
         else:
             twoFA = self._pin
         return self.finvasia.login(
@@ -87,8 +86,7 @@ class Finvasia(Broker):
                 for float_col in float_cols:
                     order[float_col] = float(order.get(float_col, 0))
                 # pendulum current datetime
-                now = pendulum.now(
-                    tz="Asia/Kolkata").format("DD-MM-YYYY HH:mm:ss")
+                now = pendulum.now(tz="Asia/Kolkata").format("DD-MM-YYYY HH:mm:ss")
                 ts = order.get("exch_tm", now)
                 # Timestamp converted to str to facilitate loading into pandas dataframe
                 order["exchange_timestamp"] = str(
@@ -191,8 +189,7 @@ class Finvasia(Broker):
         tradingsymbol = kwargs.pop("symbol")
         if tradingsymbol and exchange:
             tradingsymbol = tradingsymbol.upper()
-            tradingsymbol = self._convert_symbol(
-                tradingsymbol, exchange=exchange)
+            tradingsymbol = self._convert_symbol(tradingsymbol, exchange=exchange)
         price = kwargs.pop("price", None)
         if price and price < 0:
             price = 0.05
@@ -216,7 +213,6 @@ class Finvasia(Broker):
         # we have only quantity in kwargs now
         order_args.update(kwargs)
         response = self.finvasia.place_order(**order_args)
-        print(f"omspy_brokers.order_place: {response}")
         if isinstance(response, dict) and response.get("norenordno") is not None:
             return response["norenordno"]
 
