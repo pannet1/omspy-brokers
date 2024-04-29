@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "omspy-brokers"
@@ -9,3 +9,7 @@ description = ""
 authors = ["darkseid <uberdeveloper001@gmail.com>"]
 readme = "README.md"
 packages = [{include = "omspy_brokers"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+omspy = "^0.7.1"
