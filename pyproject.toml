@@ -12,4 +12,3 @@ packages = [{include = "omspy_brokers"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-omspy = "^0.7.1"
