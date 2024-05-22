@@ -45,13 +45,38 @@ class AliceBlue(Broker):
             return ProductType.Normal
         return ProductType.Intraday
 
+    def ltp(self, exchange, symbol):
+        obj_inst = self.broker.get_instrument_by_symbol(exchange, symbol)
+        return float(self.broker.get_scrip_info(obj_inst)["Ltp"])
+
+    def override_buffer(self, price, subtract=False):
+        tick = 0.05
+        temp = (price * 2) / 100
+        price = price - temp if subtract else price + temp
+        temp = round(price / tick) * tick
+        if temp <= 0:
+            temp = tick
+        return temp
+
+    def convert_order(self, args, exchange, symbol):
+        if "NIFTY" in symbol or (exchange == "NFO" and symbol.endswith("F")):
+            return args
+        else:
+            args["order_type"] = OrderType.Limit
+            args["trigger_price"] = 0.0
+            price = self.ltp(exchange, symbol)
+            subtract = (
+                True if args["transaction_type"] == TransactionType.Sell else False
+            )
+            args["price"] = self.override_buffer(price, subtract)
+            return args
+
     @pre
     def order_place(self, **kwargs):
         symbol = kwargs["symbol"].split(":")
         args = dict(
             transaction_type=self.get_transaction_type(kwargs["side"]),
-            instrument=self.broker.get_instrument_by_symbol(
-                symbol[0], symbol[1]),
+            instrument=self.broker.get_instrument_by_symbol(symbol[0], symbol[1]),
             quantity=kwargs["quantity"],
             order_type=self.get_order_type(kwargs["order_type"]),
             product_type=self.get_product_type(kwargs["product"]),
@@ -61,16 +86,17 @@ class AliceBlue(Broker):
             square_off=None,
             trailing_sl=None,
             is_amo=False,
-            order_tag=kwargs.get("tag", "no_tag")
+            order_tag=kwargs.get("tag", "no_tag"),
         )
+        if args["order_type"] == OrderType.Market:
+            args = self.convert_order(args, symbol[0], symbol[1])
         return self.broker.place_order(**args)
 
     def order_modify(self, **kwargs):
         symbol = kwargs["symbol"].split(":")
         args = dict(
             transaction_type=self.get_transaction_type(kwargs["side"]),
-            instrument=self.broker.get_instrument_by_symbol(
-                symbol[0], symbol[1]),
+            instrument=self.broker.get_instrument_by_symbol(symbol[0], symbol[1]),
             order_id=kwargs["order_id"],
             quantity=kwargs["quantity"],
             order_type=self.get_order_type(kwargs["order_type"]),
@@ -78,6 +104,8 @@ class AliceBlue(Broker):
             price=kwargs.get("price", None),
             trigger_price=kwargs.get("trigger_price", None),
         )
+        if args["order_type"] == OrderType.Market:
+            args = self.convert_order(args, symbol[0], symbol[1])
         return self.broker.modify_order(**args)
 
     def order_cancel(self, order_id):
@@ -88,12 +116,12 @@ class AliceBlue(Broker):
     def orders(self):
         return self.broker.get_order_history("")
 
-    @ property
-    @ post
+    @property
+    @post
     def positions(self):
         return self.broker.get_daywise_positions()
 
-    @ property
-    @ post
+    @property
+    @post
     def trades(self):
         return self.broker.get_trade_book()
