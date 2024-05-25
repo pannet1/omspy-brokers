@@ -16,13 +16,12 @@ class Zerodha(Broker):
     Automated Trading class
     """
 
-    def __init__(self, userid, password, totp, api_key, secret, tokpath):
+    def __init__(self, userid, password, totp, api_key, secret):
         self.userid = userid
         self.password = password
         self.totp = totp
         self.api_key = api_key
         self.secret = secret
-        self.tokpath = tokpath
         self.kite = KiteConnect(api_key=api_key)
         super(Zerodha, self).__init__()
 
