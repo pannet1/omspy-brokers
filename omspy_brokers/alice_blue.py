@@ -64,6 +64,7 @@ class AliceBlue(Broker):
         else:
             args["order_type"] = OrderType.Limit
             args["trigger_price"] = 0.0
+            print(f"getting ltp for {exchange=} {symbol=}")
             price = self.ltp(exchange, symbol)
             subtract = (
                 True if args["transaction_type"] == TransactionType.Sell else False

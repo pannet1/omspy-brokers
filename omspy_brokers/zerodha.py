@@ -2,13 +2,13 @@ from omspy.base import Broker, pre, post
 from kiteconnect import KiteConnect
 from typing import List, Dict
 import pyotp
-import traceback
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.options import Options
-import time
+from traceback import print_exc
+import sys
+import requests
+
+
+LOGINURL = "https://kite.zerodha.com/api/login"
+TWOFAURL = "https://kite.zerodha.com/api/twofa"
 
 
 class Zerodha(Broker):
@@ -16,112 +16,99 @@ class Zerodha(Broker):
     Automated Trading class
     """
 
-    def __init__(self,
-                 userid,
-                 password,
-                 totp,
-                 api_key,
-                 tokpath='enctoken.txt',
-                 enctoken=None):
-        try:
-            self.userid = userid
-            self.password = password
-            self.totp = totp
-            self.tokpath = tokpath
-            self.enctoken = enctoken
-            self.api_key = api_key,
-            self.kite = KiteConnect(api_key=self._api_key)
-            super(Zerodha, self).__init__()
-        except Exception as err:
-            print(f'{err} while init')
+    def __init__(self, userid, password, totp, api_key, secret, tokpath):
+        self.userid = userid
+        self.password = password
+        self.totp = totp
+        self.api_key = api_key
+        self.secret = secret
+        self.tokpath = tokpath
+        self.kite = KiteConnect(api_key=api_key)
+        super(Zerodha, self).__init__()
 
     def authenticate(self) -> bool:
         """
         Authenticate the user
         """
+
         try:
-            if self.enctoken is None:
-                print(self.enctoken)
-                self._login()
-                self.enctoken = open(self.tokpath, 'r').read().rstrip()
-            self.kite.set_headers(self.enctoken, self.userid)
-        except Exception as err:
-            print(f'{err} while authentiating')
-        return True
-
-    def _login(self) -> None:
-        try:
-            # s = Service(ChromeDriverManager().install())
-            options = Options()
-            options.add_argument('--headless')
-            options.add_argument('--disable-gpu')
-            options.add_argument("--no-sandbox")
-            options.add_argument("--disable-dev-shm-usage")
-
-            driver = webdriver.Chrome(service=ChromeService(
-                ChromeDriverManager().install()), options=options)
-            # driver = webdriver.Chrome(service=s, options=options)
-            driver.get('https://kite.zerodha.com/')
-            driver.implicitly_wait(5)
-            time.sleep(5)
-
-            # Find User ID and Password input
-            username = driver.find_element(
-                By.XPATH, '/html/body/div[1]/div/div/div[1]/div/div/div/form/div[2]/input')
-            password = driver.find_element(
-                By.XPATH, '/html/body/div[1]/div/div/div[1]/div/div/div/form/div[3]/input')
-
-            # Type User ID and Passwod
-            username.send_keys(self.userid)
-            password.send_keys(self.password)
-
-            # click on Login
-            driver.find_element(
-                By.XPATH, '/html/body/div[1]/div/div/div[1]/div/div/div/form/div[4]/button').click()
-
-            time.sleep(5)
-            # Find input to enter Pin
-            pin = driver.find_element("xpath", "//input[@type='text']")
-
-            # Type the Pin
-            otp = pyotp.TOTP(self.totp).now()
-            twoFA = f"{int(otp):06d}" if len(otp) <= 5 else otp
-            pin.send_keys(twoFA)
-
-            # Click on Continue
-            driver.find_element(
-                By.XPATH, '/html/body/div[1]/div/div/div[1]/div/div/div/form/div[3]/button').click()
-
-            # Store the Cookies and enctoken
-            time.sleep(3)
-            cookie = driver.get_cookies()
-
-            # Update Enctoken
-            for idx, each_dict in enumerate(cookie):
-                if each_dict['name'] == 'public_token':
-                    # 'kite' is added to Domain for login on web browser
-                    cookie[idx]['domain'] = 'kite.zerodha.com'
-                if each_dict['name'] == 'enctoken':
-                    with open(self.tokpath, 'w+') as wr:
-                        wr.write(each_dict['value'])
-                    print("Enctoken Updated")
-
-            driver.quit()
-            return True
-
+            session = requests.Session()
+            session_post = session.post(
+                LOGINURL, data={"user_id": self.userid, "password": self.password}
+            ).json()
+            print(f"{session_post=}")
+            if (
+                session_post
+                and isinstance(session_post, dict)
+                and session_post["data"].get("request_id", False)
+            ):
+                request_id = session_post["data"]["request_id"]
+                print(f"{request_id=}")
+            else:
+                raise ValueError("Request id is not found")
+        except ValueError as ve:
+            print(f"ValueError: {ve}")
+            sys.exit(1)  # Exit with a non-zero status code to indicate an error
+        except requests.RequestException as re:
+            print(f"RequestException: {re}")
+            sys.exit(1)
         except Exception as e:
-            print("Error while logging in using Selenium. Error: "+str(e))
-            traceback.print_exc()
-            return False
+            # Handle other unexpected exceptions
+            print(f"An unexpected error occurred: {e}")
+            sys.exit(1)
+
+        try:
+            data = {
+                "user_id": self.userid,
+                "request_id": request_id,
+                "twofa_value": pyotp.TOTP(self.totp).now(),
+                "skip_session": True,
+            }
+            response = session.post(TWOFAURL, data=data, allow_redirects=True)
+            response.raise_for_status()  # Raise an exception for HTTP errors
+        except Exception as e:
+            print(f"twofa error: {e}")
+            sys.exit(1)
+
+        try:
+            data = {"api_key": self.api_key, "allow_redirects": True}
+            session_get = session.get("https://kite.trade/connect/login/", params=data)
+            response.raise_for_status()  # Raise an exception for HTTP errors
+        except Exception as e:
+            e = str(e)
+            print(f"{e=}")
+            if "request_token" in e:
+                request_token = e.split("request_token=")[1].split(" ")[0]
+                print(f"{request_token=}")
+                pass
+            else:
+                print(f"request token error: {e}")
+                sys.exit(1)
+        else:
+            split_url = session_get.url.split("request_token=")
+            if len(split_url) >= 2:
+                request_token = split_url[1].split("&")[0]
+
+        try:
+            print(f"{data=} generated with the {request_token=}")
+            data = self.kite.generate_session(request_token, api_secret=secret)
+            if data and isinstance(data, dict) and data.get("access_token", False):
+                print(f"{data['access_token']}")
+                self.enctoken = data["access_token"]
+                return True
+            else:
+                raise ValueError("Unable to generate session")
+        except Exception as e:
+            # Handle any unexpected exceptions
+            print(f"generating session error: {e}")
+            sys.exit(1)
 
     @pre
     def order_place(self, **kwargs: List[Dict]):
         """
         Place an order
         """
-        order_args = dict(
-            variety="regular", validity="DAY"
-        )
+        order_args = dict(variety="regular", validity="DAY")
         order_args.update(kwargs)
         return self.kite.place_order(**order_args)
 
