@@ -90,7 +90,7 @@ class Zerodha(Broker):
 
         try:
             print(f"{data=} generated with the {request_token=}")
-            data = self.kite.generate_session(request_token, api_secret=secret)
+            data = self.kite.generate_session(request_token, api_secret=self.secret)
             if data and isinstance(data, dict) and data.get("access_token", False):
                 print(f"{data['access_token']}")
                 self.enctoken = data["access_token"]
