@@ -76,7 +76,7 @@ class Zerodha(Broker):
                 print(f"request token error: {e}")
                 sys.exit(1)
         else:
-            print("no errors: trying to get token")
+            print(f"no errors: trying to get token from {session_get}")
             split_url = session_get.url.split("request_token=")
             print(f"{split_url=}")
             if len(split_url) >= 2:
