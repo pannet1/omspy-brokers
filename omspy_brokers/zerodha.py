@@ -36,15 +36,6 @@ class Zerodha(Broker):
                 LOGINURL, data={"user_id": self.userid, "password": self.password}
             ).json()
             print(f"{session_post=}")
-            if (
-                session_post
-                and isinstance(session_post, dict)
-                and session_post["data"].get("request_id", False)
-            ):
-                request_id = session_post["data"]["request_id"]
-                print(f"{request_id=}")
-            else:
-                raise ValueError("Request id is not found")
         except ValueError as ve:
             print(f"ValueError: {ve}")
             sys.exit(1)  # Exit with a non-zero status code to indicate an error
@@ -57,21 +48,23 @@ class Zerodha(Broker):
             sys.exit(1)
 
         try:
-            data = {
+            req_twofa = {
                 "user_id": self.userid,
-                "request_id": request_id,
+                "request_id": session_post["data"]["request_id"],
                 "twofa_value": pyotp.TOTP(self.totp).now(),
                 "skip_session": True,
             }
-            response = session.post(TWOFAURL, data=data, allow_redirects=True)
+            response = session.post(TWOFAURL, data=req_twofa, allow_redirects=True)
             response.raise_for_status()  # Raise an exception for HTTP errors
         except Exception as e:
             print(f"twofa error: {e}")
             sys.exit(1)
 
         try:
-            data = {"api_key": self.api_key, "allow_redirects": True}
-            session_get = session.get("https://kite.trade/connect/login/", params=data)
+            req_login = {"api_key": self.api_key, "allow_redirects": True}
+            session_get = session.get(
+                "https://kite.trade/connect/login/", params=req_login
+            )
             response.raise_for_status()  # Raise an exception for HTTP errors
         except Exception as e:
             e = str(e)
@@ -79,17 +72,18 @@ class Zerodha(Broker):
             if "request_token" in e:
                 request_token = e.split("request_token=")[1].split(" ")[0]
                 print(f"{request_token=}")
-                pass
             else:
                 print(f"request token error: {e}")
                 sys.exit(1)
         else:
+            print("no errors: trying to get token")
             split_url = session_get.url.split("request_token=")
+            print(f"{split_url=}")
             if len(split_url) >= 2:
                 request_token = split_url[1].split("&")[0]
+                print(f"{request_token=}")
 
         try:
-            print(f"{data=} generated with the {request_token=}")
             data = self.kite.generate_session(request_token, api_secret=self.secret)
             if data and isinstance(data, dict) and data.get("access_token", False):
                 print(f"{data['access_token']}")
