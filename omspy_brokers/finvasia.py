@@ -230,16 +230,17 @@ class Finvasia(Broker):
         symbol = kwargs.pop("tradingsymbol")
         order_id = kwargs.pop("order_id", None)
         order_type = kwargs.pop("order_type", "MKT")
+        exchange = kwargs.pop("exchange", "NSE")
         if "discloseqty" in kwargs:
             kwargs.pop("discloseqty")
         if order_type:
             order_type = self.get_order_type(order_type)
         if symbol:
-            symbol = self._convert_symbol(symbol).upper()
+            symbol = self._convert_symbol(symbol, exchange).upper()
         order_args = dict(
             orderno=order_id,
             newprice_type=order_type,
-            exchange="NSE",
+            exchange=exchange,
             tradingsymbol=symbol,
         )
         order_args.update(kwargs)
