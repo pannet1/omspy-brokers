@@ -181,7 +181,6 @@ class Finvasia(Broker):
         buy_or_sell = kwargs.pop("side")
         product_type = kwargs.pop("product", "I")
         exchange = kwargs.pop("exchange")
-        # kwargs['quantity']
         discloseqty = kwargs.pop("disclosed_quantity", 0)
         price_type = kwargs.pop("order_type", "MARKET")
         if price_type:

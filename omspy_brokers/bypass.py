@@ -13,8 +13,7 @@ class Bypass(Broker):
     Automated Trading class
     """
 
-    def __init__(self, userid, password, totp, tokpath='enctoken.txt', enctoken=None):
-
+    def __init__(self, userid, password, totp, tokpath="enctoken.txt", enctoken=None):
         self.userid = userid
         self.password = password
         self.totp = totp
@@ -31,14 +30,14 @@ class Bypass(Broker):
             print(f"{self.enctoken} not found, getting it")
             if self.get_enctoken():
                 print(f"got token {self.enctoken}")
-                self.enctoken = open(self.tokpath, 'r').read().rstrip()
+                self.enctoken = open(self.tokpath, "r").read().rstrip()
                 print(f"again reading it {self.enctoken}")
         try:
             # self._login()
             print(f"trying to set headers with {self.enctoken}")
             self.kite.set_headers(self.enctoken, self.userid)
         except Exception as err:
-            print(f'{err} while authentiating')
+            print(f"{err} while authentiating")
             self.remove_token()
             return False
         else:
@@ -48,44 +47,42 @@ class Bypass(Broker):
     def get_enctoken(self) -> bool:
         try:
             session = requests.Session()
-            data = {'user_id': self.userid, 'password': self.password}
-            response = session.post(
-                'https://kite.zerodha.com/api/login',
-                data=data)
+            data = {"user_id": self.userid, "password": self.password}
+            response = session.post("https://kite.zerodha.com/api/login", data=data)
             otp = pyotp.TOTP(self.totp).now()
             twofa = f"{int(otp):06d}"
             response = session.post(
-                'https://kite.zerodha.com/api/twofa',
-                data={'request_id': response.json()['data']['request_id'],
-                      'twofa_value': twofa,
-                      'user_id': response.json()['data']['user_id']}
+                "https://kite.zerodha.com/api/twofa",
+                data={
+                    "request_id": response.json()["data"]["request_id"],
+                    "twofa_value": twofa,
+                    "user_id": response.json()["data"]["user_id"],
+                },
             )
-            enctoken = response.cookies.get('enctoken', False)
+            enctoken = response.cookies.get("enctoken", False)
             if enctoken:
-                with open(self.tokpath, 'w+') as wr:
+                with open(self.tokpath, "w+") as wr:
                     wr.write(enctoken)
                 self.enctoken = enctoken
             else:
-                raise Exception('Enter valid details !!!!')
+                raise Exception("Enter valid details !!!!")
         except Exception as e:
             print(e)
             return False
         else:
             return True
 
-    @ pre
+    @pre
     def order_place(self, **kwargs: List[Dict]):
         """
         Place an order
         """
-        order_args = dict(
-            variety="regular", validity="DAY"
-        )
+        order_args = dict(variety="regular", validity="DAY")
         order_args.update(kwargs)
         return self.kite.place_order(**order_args)
 
-    @ pre
-    def order_modify(self, **kwargs: List[Dict]):
+    @pre
+    def order_modify(self, **kwargs: Dict):
         """
         Modify an existing order
         Note
@@ -97,18 +94,17 @@ class Bypass(Broker):
         order_args.update(kwargs)
         return self.kite.modify_order(order_id=order_id, **order_args)
 
-    @ pre
-    def order_cancel(self, order_id: str, variety):
+    @pre
+    def order_cancel(self, **kwargs: Dict):
         """
         Cancel an existing order
         """
         order_id = kwargs.pop("order_id", None)
-        order_args = dict(variety="regular")
-        order_args.update(kwargs)
-        return self.kite.cancel_order(order_id=order_id, **order_args)
+        kwargs["variety"] = kwargs.get("variety", "regular")
+        return self.kite.cancel_order(order_id=order_id, **kwargs)
 
-    @ property
-    @ post
+    @property
+    @post
     def orders(self):
         status_map = {
             "OPEN": "PENDING",
@@ -130,8 +126,8 @@ class Bypass(Broker):
         else:
             return [{}]
 
-    @ property
-    @ post
+    @property
+    @post
     def trades(self) -> List[Dict]:
         tradebook = self.kite.trades()
         if tradebook:
@@ -139,8 +135,8 @@ class Bypass(Broker):
         else:
             return [{}]
 
-    @ property
-    @ post
+    @property
+    @post
     def positions(self):
         position_book = self.kite.positions().get("day")
         if position_book:
@@ -152,15 +148,15 @@ class Bypass(Broker):
             return position_book
         return [{}]
 
-    @ property
+    @property
     def profile(self):
         return self.kite.profile()
 
-    @ property
+    @property
     def margins(self):
         return self.kite.margins()
 
-    @ property
+    @property
     def remove_token(self):
         if os.path.exists(self.tokpath):
             os.remove(self.tokpath)
