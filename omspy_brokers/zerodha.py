@@ -119,14 +119,15 @@ class Zerodha(Broker):
         return self.kite.modify_order(order_id=order_id, **order_args)
 
     @pre
-    def order_cancel(self, order_id: str, variety):
+    def order_cancel(self, **kwargs: Dict):
         """
         Cancel an existing order
         """
         order_id = kwargs.pop("order_id", None)
-        order_args = dict(variety="regular")
-        order_args.update(kwargs)
-        return self.kite.cancel_order(order_id=order_id, **order_args)
+        if order_id is None:
+            raise ValueError("order_id is required")
+        kwargs["variety"] = kwargs.get("variety", "regular")
+        return self.kite.cancel_order(order_id=order_id, **kwargs)
 
     @property
     @post
