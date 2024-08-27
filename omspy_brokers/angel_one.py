@@ -102,7 +102,7 @@ class AngelOne(Broker):
             return ""
 
     @pre
-    def order_modify(self, kwargs: List[Dict]):
+    def order_modify(self, **kwargs: List[Dict]):
         try:
             return self.obj.modifyOrder(kwargs)
         except Exception as err:
