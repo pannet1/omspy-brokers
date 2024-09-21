@@ -32,6 +32,11 @@ class Finvasia(Broker):
                 host="https://profitmax.profitmart.in/NorenWClientTP",
                 websocket="wss://profitmax.profitmart.in/NorenWSTP/",
             )
+        elif broker == "flattrade":
+            self.finvasia = ShoonyaApiPy(
+                host="https://piconnect.flattrade.in/PiConnectTP/",
+                websocket="wss://piconnect.flattrade.in/PiConnectWSTp/",
+            )
         else:
             self.finvasia = ShoonyaApiPy()
         super(Finvasia, self).__init__()
