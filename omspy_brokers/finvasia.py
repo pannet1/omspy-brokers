@@ -183,43 +183,47 @@ class Finvasia(Broker):
 
     @pre
     def order_place(self, **kwargs) -> Union[str, None]:
-        buy_or_sell = kwargs.pop("side")
-        product_type = kwargs.pop("product", "I")
-        exchange = kwargs.pop("exchange")
-        discloseqty = kwargs.pop("disclosed_quantity", 0)
-        price_type = kwargs.pop("order_type", "MARKET")
-        if price_type:
-            price_type = self.get_order_type(price_type)
-        tradingsymbol = kwargs.pop("symbol")
-        if tradingsymbol and exchange:
-            tradingsymbol = tradingsymbol.upper()
-            tradingsymbol = self._convert_symbol(tradingsymbol, exchange=exchange)
-        price = kwargs.pop("price", None)
-        if price and price < 0:
-            price = 0.05
-        trigger_price = kwargs.pop("trigger_price", None)
-        if trigger_price and trigger_price < 0:
-            trigger_price = 0.05
-        retention = kwargs.pop("validity", "DAY")
-        remarks = kwargs.pop("tag", "no_remarks")
-        order_args = dict(
-            buy_or_sell=buy_or_sell,
-            product_type=product_type,
-            exchange=exchange,
-            tradingsymbol=tradingsymbol,
-            discloseqty=discloseqty,
-            price_type=price_type,
-            price=price,
-            trigger_price=trigger_price,
-            retention=retention,
-            remarks=remarks,
-        )
-        # we have only quantity in kwargs now
-        order_args.update(kwargs)
-        response = self.finvasia.place_order(**order_args)
-        if isinstance(response, dict) and response.get("norenordno") is not None:
-            return response["norenordno"]
+        try:
+            buy_or_sell = kwargs.pop("side")
+            product_type = kwargs.pop("product", "I")
+            exchange = kwargs.pop("exchange")
+            discloseqty = kwargs.pop("disclosed_quantity", 0)
+            price_type = kwargs.pop("order_type", "MARKET")
+            if price_type:
+                price_type = self.get_order_type(price_type)
+            tradingsymbol = kwargs.pop("symbol")
+            if tradingsymbol and exchange:
+                tradingsymbol = tradingsymbol.upper()
+                tradingsymbol = self._convert_symbol(tradingsymbol, exchange=exchange)
+            price = kwargs.pop("price", None)
+            if price and price < 0:
+                price = 0.05
+            trigger_price = kwargs.pop("trigger_price", None)
+            if trigger_price and trigger_price < 0:
+                trigger_price = 0.05
+            retention = kwargs.pop("validity", "DAY")
+            remarks = kwargs.pop("tag", "no_remarks")
+            order_args = dict(
+                buy_or_sell=buy_or_sell,
+                product_type=product_type,
+                exchange=exchange,
+                tradingsymbol=tradingsymbol,
+                discloseqty=discloseqty,
+                price_type=price_type,
+                price=price,
+                trigger_price=trigger_price,
+                retention=retention,
+                remarks=remarks,
+            )
+            # we have only quantity in kwargs now
+            order_args.update(kwargs)
+            response = self.finvasia.place_order(**order_args)
+            if isinstance(response, dict) and response.get("norenordno") is not None:
+                return response["norenordno"]
+        except Exception as err:
+            print(err)
 
+    @post
     def order_cancel(self, order_id: str) -> Union[Dict, None]:
         """
         Cancel an existing order
